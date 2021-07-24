@@ -1,0 +1,55 @@
+.messageContainer{
+    height:85%;
+    overflow-y:scroll
+}
+.inputContainer{
+    height:15%;
+    display:flex;
+    align-items: center;
+    justify-content:center;    
+}
+.input{
+    padding:16px;
+    outline:none;
+    border:none;
+    background-color:rgb(35,29,43);
+    border-radius:10px;
+    width:90%;
+    color:white;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    transition: all 1s ease
+}
+.input::placeholder{
+    color:rgba(164, 200, 255, 0.575);
+}
+.input:hover{
+    box-shadow: 0px 0px 4px  rgba(166, 242, 255, 0.4);
+}
+.input:focus{
+    box-shadow: 0px 0px 6px  rgba(255, 255, 255, 0.4);
+}
+.messageContainer::-webkit-scrollbar-track
+{
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+.messageContainer::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+.messageContainer::-webkit-scrollbar-thumb
+{
+	background-color: #F90;	
+	background-image: -webkit-linear-gradient(45deg,
+	                                          rgba(255, 255, 255, .2) 25%,
+											  transparent 25%,
+											  transparent 50%,
+											  rgba(255, 255, 255, .2) 50%,
+											  rgba(255, 255, 255, .2) 75%,
+											  transparent 75%,
+											  transparent)
+}

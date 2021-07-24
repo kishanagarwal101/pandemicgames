@@ -1,0 +1,118 @@
+.lobbyPage{ 
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex
+ }
+ .appBar{
+    background-color: #FF6701;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    color:white;
+}
+.innerAppBar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    margin-left: 5%
+}
+.drawerHeader{
+    height:10vh;
+    background-color:rgb(35,29,43);
+    display:flex;
+    align-items: center;
+    color:white;
+    border:1px solid rgba(255, 255, 255, 0.6);
+}
+/* Lobby Body */
+
+.pane1, .pane2{
+    width:100%;
+    height: 30vh;
+    display:flex;
+    align-items: center;
+    position:relative;
+    justify-content: space-between;
+    margin-bottom: 5vh;
+}
+.gameList{
+    width:50%;
+    height:100%;
+    border-radius: 10px;
+    backdrop-filter: saturate(100%) blur(5px);
+    background-color: rgba(0, 0, 0, 0.7);
+    animation: backgroundAnimation 6s infinite;
+    animation-delay: 0.5;
+}
+.roomInfo{
+    width:30%;
+    height:100%;
+    backdrop-filter: saturate(100%) blur(5px);
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    color:white;
+    padding:16px;
+    display: flex;
+    flex-direction:column;
+    animation: backgroundAnimation 6s infinite;
+    animation-delay: 1;
+
+
+}
+.userList{
+    width:40%;
+    height:100%;
+    backdrop-filter: saturate(100%) blur(5px);
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    animation: backgroundAnimation 6s infinite;
+    animation-delay: 1.5;
+    display:flex;
+    padding:16px;
+
+}
+.selectedGame{
+    height:30vh;
+    width:30vh;
+    backdrop-filter: saturate(100%) blur(5px);
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    animation: backgroundAnimation 6s infinite;
+    animation-delay: 2;
+}
+.startGame{
+    text-align: center;
+}
+
+@keyframes backgroundAnimation {
+    from {
+      backdrop-filter: blur(30px) saturate(160%) brightness(130%);
+      background-color: rgba(0, 0, 0, 0.7);
+
+    }
+    25%{
+        backdrop-filter: blur(10px) saturate(120%) brightness(100%);
+        background-color: rgba(66, 31, 31, 0.7);
+
+    }
+    50% {
+      backdrop-filter: blur(10px) saturate(100%) brightness(90%);
+      background-color: rgba(25, 41, 70, 0.7);
+
+    }
+    75%{
+        backdrop-filter: blur(5px) saturate(160%) brightness(130%);
+        background-color: rgba(24, 46, 54, 0.7);
+
+    }
+    to {
+        backdrop-filter: blur(30px) saturate(160%) brightness(130%);
+        background-color: rgba(0, 0, 0, 0.7);
+
+    }
+  }
