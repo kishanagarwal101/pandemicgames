@@ -1,0 +1,36 @@
+@font-face {
+  font-family: "KGHAPPY";
+  src: url("../Home/KGHAPPY.ttf") format("truetype");
+}
+
+.result {
+  font-family: "KGHAPPY";
+  color: white;
+}
+
+.gameName {
+  font-family: "Tomorrow", sans-serif !important;
+  font-size: 32px;
+  background-color: #ff6701;
+  padding: 8px;
+  border-radius: 4px;
+  border: 3px solid black;
+}
+.user1,
+.user2 {
+  height: 20vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.gameArea {
+  height: 60vh;
+  width: 60%;
+  margin-left: 30%;
+}
+.grid {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
