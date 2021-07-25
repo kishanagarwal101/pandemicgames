@@ -133,6 +133,7 @@ const Lobby = (props) => {
         if (!gameArray[selectedGame].limit) {
             return toast('START GAME');
         }
+
         if (users.length > gameArray[selectedGame].limit) return toast(`This game has a ${gameArray[selectedGame].limit} player Limit!`);
         socket.emit('startGame', { gameCode: selectedGame, room });
     }

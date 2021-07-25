@@ -5,7 +5,9 @@ const http = require('http');
 const socketio = require('socket.io');
 const mongoose = require('mongoose');
 const roomModel = require('./Models/roomModel');
-const roomRoutes = require('./Routes/roomRoutes')
+const roomRoutes = require('./Routes/roomRoutes');
+const tictactoeRoutes = require('./Routes/tictactoeRoutes');
+
 const joinGame = require('./Sockets/LobbySockets/joinGame');
 const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
 //DB Connection
@@ -33,9 +35,9 @@ app.use(function (req, res, next) {
 
 //Global Socket Routes
 io.on('connection', (socket) => {
-    console.log(`${socket.id} Joined`);
     socket.on('userJoined', ({ users, roomID, username }) => {
         socket.join(roomID);
+        console.log(`${socket.id} Joined`);
         socket.to(roomID).emit('userJoined', { users, username });
         socket.on('chatMessage', (payload) => io.in(roomID).emit('chatMessage', payload));
         socket.on('changeSelectedGame', async ({ gameCode }) => {
@@ -62,7 +64,8 @@ app.get('/test', (req, res) => {
         message: `Server Running on Port: ${PORT}`
     });
 });
-app.use('/', roomRoutes)
+app.use('/', roomRoutes);
+app.use('/', tictactoeRoutes);
 server.listen(PORT, () => console.log(`PORT: ${PORT}`));
 
 

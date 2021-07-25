@@ -4,7 +4,7 @@ const joinGame = async (io, gameCode, roomID, room) => {
     if (gameCode === 3) {
         const newTicTacToe = new ticTacToeModel({
             roomID: roomID,
-            users: room.users,
+            users: [],
             adminUsername: room.adminUsername,
             roomName: room.roomName
         });
