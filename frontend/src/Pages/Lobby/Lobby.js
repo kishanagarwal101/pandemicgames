@@ -66,7 +66,6 @@ const Lobby = (props) => {
     useEffect(() => {
         if (socket) {
             socket.on('userJoined', ({ users, username }) => {
-                console.log(`${username} Joined!`);
                 setMessages(prev => [...prev, { username: 'SYSTEM', message: `${username} Joined!` }]);
                 setUsers(users);
             });
@@ -80,7 +79,6 @@ const Lobby = (props) => {
                 else {
                     setIsAdmin(false);
                 }
-                console.log(`${obj.username} Left!`);
                 setMessages(prev => [...prev, { username: 'SYSTEM', message: `${obj.username} Left!` }])
 
             });

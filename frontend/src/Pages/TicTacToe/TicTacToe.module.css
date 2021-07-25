@@ -3,12 +3,35 @@
   src: url("../Home/KGHAPPY.ttf") format("truetype");
 }
 
-.result {
-  font-family: "KGHAPPY";
-  color: white;
+.mainTTT {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.gameArea {
+  height: 100vh;
+  width: 75%;
+  background-color: #FEA82F;
+  position: relative;
+  display: flex;
+}
+
+.chatArea {
+  height: 100vh;
+  width: 25%;
+  background-color: rgb(20, 20, 20);
 }
 
 .gameName {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-family: "Tomorrow", sans-serif !important;
   font-size: 32px;
   background-color: #ff6701;
@@ -16,21 +39,51 @@
   border-radius: 4px;
   border: 3px solid black;
 }
-.user1,
-.user2 {
+
+.opponentPanel, .myPanel {
+  width: 100%;
   height: 20vh;
   display: flex;
   align-items: center;
-  justify-content: space-around;
 }
-.gameArea {
+
+.gameBoard {
+  width: 100%;
   height: 60vh;
-  width: 60%;
-  margin-left: 30%;
 }
+
+.namePanel {
+  width: 30%;
+  height: 100%;
+  position: relative;
+}
+
+.namePanel div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 16px;
+  border-radius: 10px;
+  color: white;
+  filter: drop-shadow(10px 10px 3px rgba(0, 0, 0, 0.2));
+}
+
+.glassPanel {
+  width: 70%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+  padding-top: 18px;
+}
+
 .grid {
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
+
+.grid:hover {
+  background-color: rgba(0, 0, 0, 0.1)
 }

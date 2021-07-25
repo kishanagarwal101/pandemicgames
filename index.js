@@ -37,7 +37,7 @@ app.use(function (req, res, next) {
 io.on('connection', (socket) => {
     socket.on('userJoined', ({ users, roomID, username }) => {
         socket.join(roomID);
-        console.log(`${socket.id} Joined`);
+        console.log(`${socket.id} Joined Lobby`);
         socket.to(roomID).emit('userJoined', { users, username });
         socket.on('chatMessage', (payload) => io.in(roomID).emit('chatMessage', payload));
         socket.on('changeSelectedGame', async ({ gameCode }) => {
@@ -49,6 +49,14 @@ io.on('connection', (socket) => {
             joinGame(io, gameCode, roomID, room)
         });
         socket.on('disconnect', () => leaveRoom(socket, username, roomID))
+    });
+
+    socket.on('userJoinedTTT', ({ users, roomID, username }) => {
+        socket.join(roomID);
+        console.log(`${socket.id} Joined TTT`);
+        socket.to(roomID).emit('userJoinedTTT', { users, username });
+        socket.on('chatMessage', (payload) => io.in(roomID).emit('chatMessage', payload));
+
     });
 });
 
