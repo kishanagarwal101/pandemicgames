@@ -38,9 +38,8 @@ const leaveRoom = async (socket, username, roomID) => {
 
             socket.to(roomID).emit('userLeft', { updatedRoom, username });
         }
-        console.log(`${socket.id} Left Lobby!`)
     }
-
+    console.log(`${socket.id} Left Lobby!`)
 }
 
 module.exports = leaveRoom;

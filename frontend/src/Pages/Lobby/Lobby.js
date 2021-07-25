@@ -57,6 +57,10 @@ const Lobby = (props) => {
                     window.location = "/";
                 }
             });
+        return () => {
+
+        }
+
     }, [props.location.state.roomID, props.location.state.isAdmin, props.location.state.username]);
 
     useEffect(() => {
@@ -85,20 +89,27 @@ const Lobby = (props) => {
 
             socket.on('changeSelectedGame', ({ gameCode }) => setSelectedGame(gameCode));
 
-            socket.on('TTTStart', () => setRedirect(true));
-
-            return () => {
+            socket.on('TTTStart', () => {
                 socket.disconnect();
+                setRedirect(true)
+            });
+            return () => {
+                setSocket(null);
+                setUsername('');
             }
         }
     }, [socket, username]);
 
     useEffect(() => {
-        setInterval(() => {
+        const interval = setInterval(() => {
             setDay(moment().format('dddd'));
             setTime(moment().format('hh:mm:ss a'));
             setDate(moment().format('MMMM Do YYYY'));
         }, 1000);
+        return () => {
+            window.clearInterval(interval);
+        }
+
     }, []);
 
     const openDrawer = () => {
@@ -123,7 +134,7 @@ const Lobby = (props) => {
             return toast('START GAME');
         }
         if (users.length > gameArray[selectedGame].limit) return toast(`This game has a ${gameArray[selectedGame].limit} player Limit!`);
-        socket.emit('startGame', { gameCode: selectedGame });
+        socket.emit('startGame', { gameCode: selectedGame, room });
     }
 
     function copyToClipboard(text) {
@@ -140,7 +151,12 @@ const Lobby = (props) => {
     const gameArrayGroup = gameArray.map((m) => <GamePane key={m.gameCode} gameCode={m.gameCode} name={m.name} limit={m.limit} isAdmin={isAdmin} socket={socket} />);
 
     if (redirect) {
-        return <Redirect to="/tictactoe" />
+        return <Redirect
+            to={{
+                pathname: "/tictactoe",
+                state: { roomID: roomID, username: username, isAdmin: isAdmin }
+            }}
+        />
     }
 
     return (

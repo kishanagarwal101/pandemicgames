@@ -42,7 +42,10 @@ io.on('connection', (socket) => {
             await roomModel.updateOne({ roomID: roomID }, { selectedGame: gameCode });
             io.in(roomID).emit('changeSelectedGame', { gameCode });
         });
-        socket.on('startGame', ({ gameCode }) => joinGame(io, gameCode, roomID));
+        socket.on('startGame', async ({ gameCode, room }) => {
+            await roomModel.deleteOne({ roomID });
+            joinGame(io, gameCode, roomID, room)
+        });
         socket.on('disconnect', () => leaveRoom(socket, username, roomID))
     });
 });
