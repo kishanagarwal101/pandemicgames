@@ -55,7 +55,8 @@ const Home = () => {
             roomID: null,
             users: [],
             roomName: cRoomName,
-            adminUsername: cUsername
+            adminUsername: cUsername,
+            selectedGame: -1
         }
         const response = await POST('/createRoom', payload);
         if (response.code === 200) {

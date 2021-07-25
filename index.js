@@ -4,10 +4,10 @@ const express = require('express');
 const http = require('http');
 const socketio = require('socket.io');
 const mongoose = require('mongoose');
-
+const roomModel = require('./Models/roomModel');
 const roomRoutes = require('./Routes/roomRoutes')
-
-const leaveRoom = require('./Sockets/LobbySockets/leaveRoom')
+const joinGame = require('./Sockets/LobbySockets/joinGame');
+const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
 //DB Connection
 mongoose.connect(process.env.DBURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }, () => {
     console.log("Connected to Pandemic DB!")
@@ -37,9 +37,12 @@ io.on('connection', (socket) => {
     socket.on('userJoined', ({ users, roomID, username }) => {
         socket.join(roomID);
         socket.to(roomID).emit('userJoined', { users, username });
-
         socket.on('chatMessage', (payload) => io.in(roomID).emit('chatMessage', payload));
-
+        socket.on('changeSelectedGame', async ({ gameCode }) => {
+            await roomModel.updateOne({ roomID: roomID }, { selectedGame: gameCode });
+            io.in(roomID).emit('changeSelectedGame', { gameCode });
+        });
+        socket.on('startGame', ({ gameCode }) => joinGame(io, gameCode, roomID));
         socket.on('disconnect', () => leaveRoom(socket, username, roomID))
     });
 });

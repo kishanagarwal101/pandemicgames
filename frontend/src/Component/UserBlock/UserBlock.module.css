@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans+SC:wght@500&display=swap');
+
+.mainPanel{
+    padding: 8px;
+    border-radius: 2px;
+    width: 85%;
+    margin: auto;
+    color: white;
+     font-weight:bold;
+    font-size: 20px;
+    text-align: center;
+    background-color: rgba(42, 169, 253, 0.2);
+    backdrop-filter: saturate(100%) blur(5px);
+    margin-top:10px;
+    margin-bottom: 10px;
+    font-family: 'Encode Sans SC', sans-serif;
+}

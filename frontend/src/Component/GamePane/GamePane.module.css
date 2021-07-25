@@ -1,0 +1,15 @@
+.pane{
+    background-color:rgba(88, 52, 219, 0.2);
+    border-radius: 6px;
+    height:25vh;
+    min-width: 25vh;
+    margin-left:50px;
+    margin-right:50px;
+    position:relative;
+    color:white;
+}
+.pane{
+    display: flex;
+    align-items:center;
+    justify-content: center;
+}

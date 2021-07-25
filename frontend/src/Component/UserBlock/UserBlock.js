@@ -1,9 +1,9 @@
 import React from 'react';
-
-const UserBlock = () => {
+import styles from './UserBlock.module.css'
+const UserBlock = (props) => {
     return (
-        <div>
-            User
+        <div className={styles.mainPanel}>
+            {props.index}. {props.username}
         </div>
     );
 }

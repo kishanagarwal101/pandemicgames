@@ -9,7 +9,8 @@ const roomSchema = mongoose.Schema({
     roomID: { type: String, required: true, unique: true },
     users: { type: [userSchema] },
     roomName: { type: String, required: true },
-    adminUsername: { type: String }
+    adminUsername: { type: String },
+    selectedGame: { type: Number }
 });
 
 const roomModel = new mongoose.model('roomModel', roomSchema);
