@@ -5,6 +5,7 @@ import styles from './TicTacToe.module.css';
 import Chat from '../../Component/Chat/Chat';
 import SelectableGlass from './Glass/SelectableGlass/SelectableGlass';
 import DumbGlass from './Glass/DumbGlass/DumbGlass';
+import Result from './TTTResult/TTTResult.js';
 const TicTacToe = (props) => {
 
     const [socket, setSocket] = useState(null);
@@ -16,7 +17,7 @@ const TicTacToe = (props) => {
     const [messages, setMessages] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [roomID, setRoomID] = useState(null);
-
+    const [result, setResult] = useState(null);
     //GAME RELATED STATES
 
     const [myWeightArray, setMyWeightArray] = useState([2, 2.5, 3, 3.5, 4]);
@@ -63,6 +64,23 @@ const TicTacToe = (props) => {
                 setGameState(gameState);
                 setOpponentWeightArray(incomingWeightArray);
             });
+            socket.on('TTTWon', () => {
+                console.log("you won");
+                setResult('YOU WON!');
+            })
+            socket.on('TTTLost', ({ gameState, incomingWeightArray }) => {
+                console.log(gameState);
+                setGameState(gameState);
+                setOpponentWeightArray(incomingWeightArray);
+                setResult('You Lost');
+                console.log("you lost");
+            })
+            socket.on('TTTDraw', ({ gameState, incomingWeightArray }) => {
+                setGameState(gameState);
+                setOpponentWeightArray(incomingWeightArray);
+                console.log('DRAW');
+                setResult('DRAW');
+            })
         }
     }, [socket]);
     const handleGridClick = (e, i, j) => {
@@ -88,7 +106,6 @@ const TicTacToe = (props) => {
 
         setIsMyTurn(false);
         setSelectedGlassIndex(-1);
-
         socket.emit('TTTMove', { gameState: newGameState, myWeightArray: newMyWeightArray, opponentWeightArray: opponentWeightArray });
 
 
@@ -106,147 +123,149 @@ const TicTacToe = (props) => {
     const opponentWeightGlass = opponentWeightArray.map((m) => <DumbGlass weight={m} color="BLUE" key={m} />);
     const opponentName = users.length === 2 ? users[0].username === username ? users[1].username : users[0].username : null
     return (
-        <div className={styles.mainTTT}>
-            <div className={styles.gameArea}>
-                <div style={{ height: '100vh', width: '80%' }}>
-                    <div className={styles.opponentPanel}>
-                        <div className={styles.namePanel}>
-                            <div style={{ backgroundColor: 'rgb(58,90,255)' }}>
-                                {opponentName}
+        <>
+            <Result result={result} isAdmin={isAdmin} />
+            <div className={styles.mainTTT}>
+                <div className={styles.gameArea}>
+                    <div style={{ height: '100vh', width: '80%' }}>
+                        <div className={styles.opponentPanel}>
+                            <div className={styles.namePanel}>
+                                <div style={{ backgroundColor: 'rgb(58,90,255)' }}>
+                                    {opponentName}
+                                </div>
+                            </div>
+                            <div className={styles.glassPanel}>
+                                {opponentWeightGlass}
                             </div>
                         </div>
-                        <div className={styles.glassPanel}>
-                            {opponentWeightGlass}
+                        <div className={styles.gameBoard}>
+                            <div style={{ width: '70%', height: '60vh', marginLeft: '30%' }}>
+                                <div style={{ display: 'flex', height: '33.33%' }}>
+                                    <div className={styles.grid} style={{ flex: '1', borderRight: '3px solid black', borderBottom: '3px solid black' }} onClick={(e) => handleGridClick(e, 0, 0)}>
+                                        {!gameState[0][0].user ? null
+                                            :
+                                            gameState[0][0].user === username ? <DumbGlass weight={gameState[0][0].weight} color="RED" />
+                                                :
+                                                <DumbGlass weight={gameState[0][0].weight} color="BLUE" />
+                                        }
+
+                                    </div>
+                                    <div className={styles.grid} style={{ flex: '1', border: '3px solid black', borderTop: 'none' }} onClick={(e) => handleGridClick(e, 0, 1)}>
+                                        {!gameState[0][1].user ? null
+                                            :
+                                            gameState[0][1].user === username ? <DumbGlass weight={gameState[0][1].weight} color="RED" />
+                                                :
+                                                <DumbGlass weight={gameState[0][1].weight} color="BLUE" />
+                                        }
+
+                                    </div>
+                                    <div className={styles.grid} style={{ flex: '1', borderLeft: '3px solid black', borderBottom: '3px solid black' }} onClick={(e) => handleGridClick(e, 0, 2)}>
+                                        {!gameState[0][2].user ? null
+                                            :
+                                            gameState[0][2].user === username ? <DumbGlass weight={gameState[0][2].weight} color="RED" />
+                                                :
+                                                <DumbGlass weight={gameState[0][2].weight} color="BLUE" />
+                                        }
+
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', height: '33.33%' }}>
+                                    <div className={styles.grid} style={{ flex: '1', border: '3px solid black', borderLeft: 'none' }} onClick={(e) => handleGridClick(e, 1, 0)}>
+                                        {!gameState[1][0].user ? null
+                                            :
+                                            gameState[1][0].user === username ? <DumbGlass weight={gameState[1][0].weight} color="RED" />
+                                                :
+                                                <DumbGlass weight={gameState[1][0].weight} color="BLUE" />
+                                        }
+
+                                    </div>
+                                    <div className={styles.grid} style={{ flex: '1', border: '3px solid black' }} onClick={(e) => handleGridClick(e, 1, 1)}>
+                                        {!gameState[1][1].user ? null
+                                            :
+                                            gameState[1][1].user === username ? <DumbGlass weight={gameState[1][1].weight} color="RED" />
+                                                :
+                                                <DumbGlass weight={gameState[1][1].weight} color="BLUE" />
+                                        }
+
+                                    </div>
+                                    <div className={styles.grid} style={{ flex: '1', border: '3px solid black', borderRight: 'none' }} onClick={(e) => handleGridClick(e, 1, 2)}>
+                                        {!gameState[1][2].user ? null
+                                            :
+                                            gameState[1][2].user === username ? <DumbGlass weight={gameState[1][2].weight} color="RED" />
+                                                :
+                                                <DumbGlass weight={gameState[1][2].weight} color="BLUE" />
+                                        }
+
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', height: '33.33%' }}>
+                                    <div className={styles.grid} style={{ flex: '1', borderRight: '3px solid black', borderTop: '3px solid black' }} onClick={(e) => handleGridClick(e, 2, 0)}>
+                                        {!gameState[2][0].user ? null
+                                            :
+                                            gameState[2][0].user === username ? <DumbGlass weight={gameState[2][0].weight} color="RED" />
+                                                :
+                                                <DumbGlass weight={gameState[2][0].weight} color="BLUE" />
+                                        }
+
+                                    </div>
+                                    <div className={styles.grid} style={{ flex: '1', border: '3px solid black', borderBottom: 'none' }} onClick={(e) => handleGridClick(e, 2, 1)}>
+                                        {!gameState[2][1].user ? null
+                                            :
+                                            gameState[2][1].user === username ? <DumbGlass weight={gameState[2][1].weight} color="RED" />
+                                                :
+                                                <DumbGlass weight={gameState[2][1].weight} color="BLUE" />
+                                        }
+
+                                    </div>
+                                    <div className={styles.grid} style={{ flex: '1', borderLeft: '3px solid black', borderTop: '3px solid black' }} onClick={(e) => handleGridClick(e, 2, 2)}>
+                                        {!gameState[2][2].user ? null
+                                            :
+                                            gameState[2][2].user === username ? <DumbGlass weight={gameState[2][2].weight} color="RED" />
+                                                :
+                                                <DumbGlass weight={gameState[2][2].weight} color="BLUE" />
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.myPanel}>
+                            <div className={styles.namePanel}>
+                                <div style={{ backgroundColor: 'rgb(234, 81, 78)' }}>{username}</div>
+                            </div>
+                            <div className={styles.glassPanel}>
+                                {myWeightGlass}
+                            </div>
                         </div>
                     </div>
-                    <div className={styles.gameBoard}>
-                        <div style={{ width: '70%', height: '60vh', marginLeft: '30%' }}>
-                            <div style={{ display: 'flex', height: '33.33%' }}>
-                                <div className={styles.grid} style={{ flex: '1', borderRight: '3px solid black', borderBottom: '3px solid black' }} onClick={(e) => handleGridClick(e, 0, 0)}>
-                                    {!gameState[0][0].user ? null
-                                        :
-                                        gameState[0][0].user === username ? <DumbGlass weight={gameState[0][0].weight} color="RED" />
-                                            :
-                                            <DumbGlass weight={gameState[0][0].weight} color="BLUE" />
-                                    }
-
-                                </div>
-                                <div className={styles.grid} style={{ flex: '1', border: '3px solid black', borderTop: 'none' }} onClick={(e) => handleGridClick(e, 0, 1)}>
-                                    {!gameState[0][1].user ? null
-                                        :
-                                        gameState[0][1].user === username ? <DumbGlass weight={gameState[0][1].weight} color="RED" />
-                                            :
-                                            <DumbGlass weight={gameState[0][1].weight} color="BLUE" />
-                                    }
-
-                                </div>
-                                <div className={styles.grid} style={{ flex: '1', borderLeft: '3px solid black', borderBottom: '3px solid black' }} onClick={(e) => handleGridClick(e, 0, 2)}>
-                                    {!gameState[0][2].user ? null
-                                        :
-                                        gameState[0][2].user === username ? <DumbGlass weight={gameState[0][2].weight} color="RED" />
-                                            :
-                                            <DumbGlass weight={gameState[0][2].weight} color="BLUE" />
-                                    }
-
-                                </div>
+                    <div style={{ height: '100vh', width: '20%', position: 'relative' }}>
+                        <div className={styles.gameName}>
+                            <div style={{ marginTop: '30px', marginBottom: '30px' }}>
+                                <div style={{ textAlign: 'center' }}>T</div>
+                                <div style={{ textAlign: 'center' }}>I</div>
+                                <div style={{ textAlign: 'center' }}>C</div>
                             </div>
-                            <div style={{ display: 'flex', height: '33.33%' }}>
-                                <div className={styles.grid} style={{ flex: '1', border: '3px solid black', borderLeft: 'none' }} onClick={(e) => handleGridClick(e, 1, 0)}>
-                                    {!gameState[1][0].user ? null
-                                        :
-                                        gameState[1][0].user === username ? <DumbGlass weight={gameState[1][0].weight} color="RED" />
-                                            :
-                                            <DumbGlass weight={gameState[1][0].weight} color="BLUE" />
-                                    }
-
-                                </div>
-                                <div className={styles.grid} style={{ flex: '1', border: '3px solid black' }} onClick={(e) => handleGridClick(e, 1, 1)}>
-                                    {!gameState[1][1].user ? null
-                                        :
-                                        gameState[1][1].user === username ? <DumbGlass weight={gameState[1][1].weight} color="RED" />
-                                            :
-                                            <DumbGlass weight={gameState[1][1].weight} color="BLUE" />
-                                    }
-
-                                </div>
-                                <div className={styles.grid} style={{ flex: '1', border: '3px solid black', borderRight: 'none' }} onClick={(e) => handleGridClick(e, 1, 2)}>
-                                    {!gameState[1][2].user ? null
-                                        :
-                                        gameState[1][2].user === username ? <DumbGlass weight={gameState[1][2].weight} color="RED" />
-                                            :
-                                            <DumbGlass weight={gameState[1][2].weight} color="BLUE" />
-                                    }
-
-                                </div>
+                            <div style={{ marginTop: '30px', marginBottom: '30px' }}>
+                                <div style={{ textAlign: 'center' }}>T</div>
+                                <div style={{ textAlign: 'center' }}>A</div>
+                                <div style={{ textAlign: 'center' }}>C</div>
                             </div>
-                            <div style={{ display: 'flex', height: '33.33%' }}>
-                                <div className={styles.grid} style={{ flex: '1', borderRight: '3px solid black', borderTop: '3px solid black' }} onClick={(e) => handleGridClick(e, 2, 0)}>
-                                    {!gameState[2][0].user ? null
-                                        :
-                                        gameState[2][0].user === username ? <DumbGlass weight={gameState[2][0].weight} color="RED" />
-                                            :
-                                            <DumbGlass weight={gameState[2][0].weight} color="BLUE" />
-                                    }
-
-                                </div>
-                                <div className={styles.grid} style={{ flex: '1', border: '3px solid black', borderBottom: 'none' }} onClick={(e) => handleGridClick(e, 2, 1)}>
-                                    {!gameState[2][1].user ? null
-                                        :
-                                        gameState[2][1].user === username ? <DumbGlass weight={gameState[2][1].weight} color="RED" />
-                                            :
-                                            <DumbGlass weight={gameState[2][1].weight} color="BLUE" />
-                                    }
-
-                                </div>
-                                <div className={styles.grid} style={{ flex: '1', borderLeft: '3px solid black', borderTop: '3px solid black' }} onClick={(e) => handleGridClick(e, 2, 2)}>
-                                    {!gameState[2][2].user ? null
-                                        :
-                                        gameState[2][2].user === username ? <DumbGlass weight={gameState[2][2].weight} color="RED" />
-                                            :
-                                            <DumbGlass weight={gameState[2][2].weight} color="BLUE" />
-                                    }
-
-                                </div>
+                            <div style={{ marginTop: '30px', marginBottom: '30px' }}>
+                                <div style={{ textAlign: 'center' }}>T</div>
+                                <div style={{ textAlign: 'center' }}>O</div>
+                                <div style={{ textAlign: 'center' }}>E</div>
                             </div>
-                        </div>
-                    </div>
-                    <div className={styles.myPanel}>
-                        <div className={styles.namePanel}>
-                            <div style={{ backgroundColor: 'rgb(234, 81, 78)' }}>{username}</div>
-                        </div>
-                        <div className={styles.glassPanel}>
-                            {myWeightGlass}
+                            <div style={{ marginTop: '30px', marginBottom: '30px' }}>
+                                2.0
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div style={{ height: '100vh', width: '20%', position: 'relative' }}>
-                    <div className={styles.gameName}>
-                        <div style={{ marginTop: '30px', marginBottom: '30px' }}>
-                            <div style={{ textAlign: 'center' }}>T</div>
-                            <div style={{ textAlign: 'center' }}>I</div>
-                            <div style={{ textAlign: 'center' }}>C</div>
-                        </div>
-                        <div style={{ marginTop: '30px', marginBottom: '30px' }}>
-                            <div style={{ textAlign: 'center' }}>T</div>
-                            <div style={{ textAlign: 'center' }}>A</div>
-                            <div style={{ textAlign: 'center' }}>C</div>
-                        </div>
-                        <div style={{ marginTop: '30px', marginBottom: '30px' }}>
-                            <div style={{ textAlign: 'center' }}>T</div>
-                            <div style={{ textAlign: 'center' }}>O</div>
-                            <div style={{ textAlign: 'center' }}>E</div>
-                        </div>
-                        <div style={{ marginTop: '30px', marginBottom: '30px' }}>
-                            2.0
-                        </div>
-                    </div>
+                <div className={styles.chatArea}>
+                    <Chat socket={socket} username={username} messages={messages} />
                 </div>
             </div>
-            <div className={styles.chatArea}>
-                <Chat socket={socket} username={username} messages={messages} />
-            </div>
-        </div>
-
+        </>
     );
 }
 
