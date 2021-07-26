@@ -10,6 +10,7 @@ const tictactoeRoutes = require('./Routes/tictactoeRoutes');
 
 const joinGame = require('./Sockets/LobbySockets/joinGame');
 const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
+const handleTTTMove = require('./Sockets/GameSockets/TTT/handleTTTMove');
 //DB Connection
 mongoose.connect(process.env.DBURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }, () => {
     console.log("Connected to Pandemic DB!")
@@ -57,6 +58,9 @@ io.on('connection', (socket) => {
         socket.to(roomID).emit('userJoinedTTT', { users, username });
         socket.on('chatMessage', (payload) => io.in(roomID).emit('chatMessage', payload));
 
+        socket.on('TTTMove', ({ gameState, myWeightArray, opponentWeightArray }) => {
+            handleTTTMove(socket, io, gameState, myWeightArray, roomID, opponentWeightArray);
+        });
     });
 });
 

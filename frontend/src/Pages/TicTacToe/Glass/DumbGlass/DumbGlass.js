@@ -7,9 +7,10 @@ const DumbGlass = (props) => {
             <img
                 src={props.color === "RED" ? redGlass : blueGlass}
                 alt={props.color === "RED" ? "redGlass" : "blueGlass"}
-                height={props.weight * 20}
+                height={Math.abs(props.weight) * 20}
                 style={{
-                    transform: 'rotateX(180deg)'
+                    transform: 'rotateX(180deg)',
+                    opacity: props.weight <= 0 ? '0.5' : 1
                 }}
             />
         </div>

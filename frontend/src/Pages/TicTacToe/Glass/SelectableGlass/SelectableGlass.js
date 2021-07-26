@@ -5,6 +5,7 @@ const SelectableGlass = (props) => {
         <div style={{ transform: props.selectedGlassIndex === props.index ? 'translateY(-30%)' : 'translateY(0)', transition: '0.4s ease' }}
             onClick={() => {
                 if (props.weight <= 0) return;
+                if (!props.isMyTurn) return;
                 props.setSelectedGlassIndex(props.index)
             }}
         >
@@ -14,7 +15,7 @@ const SelectableGlass = (props) => {
                 height={Math.abs(props.weight) * 20}
                 style={{
                     transform: 'rotateX(180deg)',
-                    cursor: 'pointer',
+                    cursor: props.isMyTurn ? 'pointer' : 'not-allowed',
                     filter: props.selectedGlassIndex === props.index
                         ? 'drop-shadow(2px 2px 0 black) drop-shadow(-2px -2px 0 black)' : 'drop-shadow(10px -10px 3px rgba(0, 0, 0, 0.2))',
                     opacity: props.weight <= 0 ? '0.5' : 1
