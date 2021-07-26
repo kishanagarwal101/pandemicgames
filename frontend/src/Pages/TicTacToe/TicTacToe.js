@@ -15,6 +15,7 @@ const TicTacToe = (props) => {
     });
     const [users, setUsers] = useState([]);
     const [username, setUsername] = useState('');
+    const opponentName = users.length === 2 ? users[0].username === username ? users[1].username : users[0].username : null
     const [messages, setMessages] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [roomID, setRoomID] = useState(null);
@@ -30,7 +31,7 @@ const TicTacToe = (props) => {
         [{ weight: 0, user: null }, { weight: 0, user: null }, { weight: 0, user: null }],
         [{ weight: 0, user: null }, { weight: 0, user: null }, { weight: 0, user: null }]
     ]);
-    
+
 
 
     useEffect(() => {
@@ -84,7 +85,7 @@ const TicTacToe = (props) => {
                 console.log('DRAW');
                 setResult('DRAW');
             })
-            socket.on('TTTReset',()=>{
+            socket.on('TTTReset', () => {
                 setResult(null);
                 setOpponentWeightArray([2, 2.5, 3, 3.5, 4]);
                 setMyWeightArray([2, 2.5, 3, 3.5, 4]);
@@ -93,24 +94,26 @@ const TicTacToe = (props) => {
                     [{ weight: 0, user: null }, { weight: 0, user: null }, { weight: 0, user: null }],
                     [{ weight: 0, user: null }, { weight: 0, user: null }, { weight: 0, user: null }]
                 ]);
-        
-                if(username===room.lastTurn){
+                // console.log(room.lastTurn);
+                // console.log(room);
+                // console.log(username);
+                if (username === room.lastTurn) {
                     setIsMyTurn(false);
-                    let newRoom=room;
-                    newRoom.lastTurn=opponentName;
+                    let newRoom = room;
+                    newRoom.lastTurn = opponentName;
                     setRoom(newRoom);
-                    console.log(room.lastTurn)
-                }else{
+                    console.log('A')
+                } else {
                     setIsMyTurn(true);
-                    let newRoom=room;
-                    newRoom.lastTurn=username;
+                    let newRoom = room;
+                    newRoom.lastTurn = username;
                     setRoom(newRoom);
-                    console.log(room.lastTurn)
-                }  
+                    console.log('B')
+                }
                 setSelectedGlassIndex(-1);
             })
         }
-    }, [socket]);
+    }, [socket, room, username, opponentName]);
 
 
     const handleGridClick = (e, i, j) => {
@@ -151,7 +154,6 @@ const TicTacToe = (props) => {
         isMyTurn={isMyTurn}
     />)
     const opponentWeightGlass = opponentWeightArray.map((m) => <DumbGlass weight={m} color="BLUE" key={m} />);
-    const opponentName = users.length === 2 ? users[0].username === username ? users[1].username : users[0].username : null
     return (
         <>
             <Result result={result} socket={socket} isAdmin={isAdmin} />
