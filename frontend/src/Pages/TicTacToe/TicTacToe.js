@@ -6,6 +6,7 @@ import Chat from '../../Component/Chat/Chat';
 import SelectableGlass from './Glass/SelectableGlass/SelectableGlass';
 import DumbGlass from './Glass/DumbGlass/DumbGlass';
 import Result from './TTTResult/TTTResult.js';
+
 const TicTacToe = (props) => {
 
     const [socket, setSocket] = useState(null);
@@ -29,6 +30,8 @@ const TicTacToe = (props) => {
         [{ weight: 0, user: null }, { weight: 0, user: null }, { weight: 0, user: null }],
         [{ weight: 0, user: null }, { weight: 0, user: null }, { weight: 0, user: null }]
     ]);
+    
+
 
     useEffect(() => {
         const socket = SocketIOClient('/');
@@ -81,8 +84,35 @@ const TicTacToe = (props) => {
                 console.log('DRAW');
                 setResult('DRAW');
             })
+            socket.on('TTTReset',()=>{
+                setResult(null);
+                setOpponentWeightArray([2, 2.5, 3, 3.5, 4]);
+                setMyWeightArray([2, 2.5, 3, 3.5, 4]);
+                setGameState([
+                    [{ weight: 0, user: null }, { weight: 0, user: null }, { weight: 0, user: null }],
+                    [{ weight: 0, user: null }, { weight: 0, user: null }, { weight: 0, user: null }],
+                    [{ weight: 0, user: null }, { weight: 0, user: null }, { weight: 0, user: null }]
+                ]);
+        
+                if(username===room.lastTurn){
+                    setIsMyTurn(false);
+                    let newRoom=room;
+                    newRoom.lastTurn=opponentName;
+                    setRoom(newRoom);
+                    console.log(room.lastTurn)
+                }else{
+                    setIsMyTurn(true);
+                    let newRoom=room;
+                    newRoom.lastTurn=username;
+                    setRoom(newRoom);
+                    console.log(room.lastTurn)
+                }  
+                setSelectedGlassIndex(-1);
+            })
         }
     }, [socket]);
+
+
     const handleGridClick = (e, i, j) => {
         e.stopPropagation();
         //No Glass Selected
@@ -124,7 +154,7 @@ const TicTacToe = (props) => {
     const opponentName = users.length === 2 ? users[0].username === username ? users[1].username : users[0].username : null
     return (
         <>
-            <Result result={result} isAdmin={isAdmin} />
+            <Result result={result} socket={socket} isAdmin={isAdmin} />
             <div className={styles.mainTTT}>
                 <div className={styles.gameArea}>
                     <div style={{ height: '100vh', width: '80%' }}>
