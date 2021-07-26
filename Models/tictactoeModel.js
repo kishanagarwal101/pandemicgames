@@ -10,6 +10,7 @@ const ticTacToeSchema = mongoose.Schema({
     users: { type: [userSchema] },
     roomName: { type: String, required: true },
     adminUsername: { type: String },
+    lastTurn: { type: String }
 });
 
 const ticTacToeModel = new mongoose.model('ticTacToeModel', ticTacToeSchema);

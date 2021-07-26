@@ -82,6 +82,10 @@
 
 .grid {
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s ease
 }
 
 .grid:hover {

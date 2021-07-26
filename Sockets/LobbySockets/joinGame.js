@@ -6,7 +6,8 @@ const joinGame = async (io, gameCode, roomID, room) => {
             roomID: roomID,
             users: [],
             adminUsername: room.adminUsername,
-            roomName: room.roomName
+            roomName: room.roomName,
+            lastTurn: room.adminUsername
         });
         await newTicTacToe.save();
         io.in(roomID).emit('TTTStart');
