@@ -37,14 +37,39 @@ const checkWinner = (gameState) => {
 }
 
 const isDraw = (gameState, myWeighArray, opponentWeightArray) => {
-    //Retturn true if draw
 
-    //False If Not
+    let c = 0;
+    for (let i = 0; i < 5; i++) {
+        if (myWeighArray[i] > 0) {
+            c++;
+        }
+        if (opponentWeightArray[i] > 0) {
+            c++;
+        }
+        if (c == 2)
+            return false;
+    }
+
+    if (c === 1) {
+        let flag = flase;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (gameState.user === null)
+                    return false;
+            }
+        }
+        return true;
+    }
+    return true;
 }
 const handleTTTMove = (socket, io, gameState, myWeightArray, roomID, opponentWeightArray) => {
-    //Check Draw
-    //Check Win
-    //Emit If neither
+    if (isDraw(gameState, myWeighArray, opponentWeightArray));
+    return socket.to(roomID).emit('TTTTDraw');
+    //winner
+    if (checkWinner(gameState)) {
+
+    }
+
     socket.to(roomID).emit('TTTMove', { gameState, incomingWeightArray: myWeightArray });
 }
 
