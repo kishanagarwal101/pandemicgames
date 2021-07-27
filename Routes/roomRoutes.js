@@ -45,7 +45,6 @@ router.get('/validateUsername/:roomID/:username', (req, res) => {
 });
 
 router.post('/joinRoom/:roomID', (req, res) => {
-
     roomModel.findOneAndUpdate({ roomID: req.params.roomID }, { "$push": { users: req.body } }, { new: true }, (err, room) => {
         if (err) {
             console.error(err);

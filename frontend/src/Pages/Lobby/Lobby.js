@@ -94,6 +94,9 @@ const Lobby = (props) => {
             return () => {
                 setSocket(null);
                 setUsername('');
+                setSelectedGame(-1);
+                setMessages([]);
+                setIsAdmin(false);
             }
         }
     }, [socket, username]);

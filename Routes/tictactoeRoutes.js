@@ -22,7 +22,8 @@ router.get('/leaveTTT/:roomID', async (req, res) => {
                 roomID: roomID,
                 users: [],
                 adminUsername: currentTTT.adminUsername,
-                roomName: currentTTT.roomName
+                roomName: currentTTT.roomName,
+                selectedGame: -1
             }
         );
         await newRoom.save();
