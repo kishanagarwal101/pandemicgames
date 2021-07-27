@@ -62,7 +62,11 @@ io.on('connection', (socket) => {
             handleTTTMove(socket, io, gameState, myWeightArray, roomID, opponentWeightArray);
         });
 
-        socket.on('TTTReset',()=>io.in(roomID).emit('TTTReset'));
+        socket.on('TTTReset', () => io.in(roomID).emit('TTTReset'));
+        socket.on('disconnect', () => {
+            disconnectTTT();
+        })
+        socket.on('returnToRoomFromTTT', () => io.in(roomID).emit('returnToRoomFromTTT'))
     });
 });
 

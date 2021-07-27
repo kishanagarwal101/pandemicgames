@@ -6,7 +6,7 @@ import Chat from '../../Component/Chat/Chat';
 import SelectableGlass from './Glass/SelectableGlass/SelectableGlass';
 import DumbGlass from './Glass/DumbGlass/DumbGlass';
 import Result from './TTTResult/TTTResult.js';
-
+import { Redirect } from 'react-router-dom';
 const TicTacToe = (props) => {
 
     const [socket, setSocket] = useState(null);
@@ -20,6 +20,7 @@ const TicTacToe = (props) => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [roomID, setRoomID] = useState(null);
     const [result, setResult] = useState(null);
+    const [redirect, setRedirect] = useState(false);
     //GAME RELATED STATES
 
     const [myWeightArray, setMyWeightArray] = useState([2, 2.5, 3, 3.5, 4]);
@@ -112,6 +113,7 @@ const TicTacToe = (props) => {
                 }
                 setSelectedGlassIndex(-1);
             })
+            socket.on('returnToRoomFromTTT', () => setRedirect(true));
         }
     }, [socket, room, username, opponentName]);
 
@@ -154,10 +156,18 @@ const TicTacToe = (props) => {
         isMyTurn={isMyTurn}
     />)
     const opponentWeightGlass = opponentWeightArray.map((m) => <DumbGlass weight={m} color="BLUE" key={m} />);
+    if (redirect) {
+        return <Redirect
+            to={{
+                pathname: "/lobby",
+                state: { roomID: props.location.state.roomID, username: props.location.state.username, isAdmin: props.location.state.isAdmin }
+            }}
+        />
+    }
     return (
         <>
-            <Result result={result} socket={socket} isAdmin={isAdmin} />
-            <div className={styles.mainTTT}>
+            <Result result={result} socket={socket} isAdmin={isAdmin} roomID={roomID} />
+            <div className={styles.mainTTT} >
                 <div className={styles.gameArea}>
                     <div style={{ height: '100vh', width: '80%' }}>
                         <div className={styles.opponentPanel}>
