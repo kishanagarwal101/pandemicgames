@@ -11,6 +11,7 @@ const path = require('path');
 const joinGame = require('./Sockets/LobbySockets/joinGame');
 const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
 const handleTTTMove = require('./Sockets/GameSockets/TTT/handleTTTMove');
+const disconnectTTT = require('./Sockets/GameSockets/TTT/disconnectTTT');
 //DB Connection
 mongoose.connect(process.env.DBURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }, () => {
     console.log("Connected to Pandemic DB!")

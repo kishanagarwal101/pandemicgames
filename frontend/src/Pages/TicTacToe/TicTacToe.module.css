@@ -91,3 +91,29 @@
 .grid:hover {
   background-color: rgba(0, 0, 0, 0.1)
 }
+
+.gridPlacement {
+  width: 70%;
+  height: 60vh;
+  margin-left: 30%
+}
+
+.leftClassPanel {
+  width: 80%
+}
+
+@media only screen and (max-width: 800px) {
+  .gridPlacement {
+    width: 100%;
+    margin-left: 5%
+  }
+  .chatArea, .gameName, .namePanel {
+    display: none
+  }
+  .gameArea, .glassPanel {
+    width: 100%;
+  }
+  .leftClassPanel {
+    width: 100%;
+  }
+}

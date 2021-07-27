@@ -163,10 +163,10 @@ const Lobby = (props) => {
 
     return (
         <div className={styles.lobbyPage}>
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh', backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${BGIMAGE})` }} ref={(e) => mainRef = e}>
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${BGIMAGE})` }} ref={(e) => mainRef = e}>
                 <div className={styles.appBar}>
                     <div className={styles.innerAppBar}>
-                        <h1 style={{ fontFamily: 'strikefighter', fontSize: '40px' }}>PANDEMIC GAMES</h1>
+                        <h1 className={styles.h1} style={{ fontFamily: 'strikefighter' }}>PANDEMIC GAMES</h1>
                         <MenuIcon fontSize="large" style={{ cursor: 'pointer', visibility: open ? 'hidden' : 'visible' }} onClick={openDrawer} />
                     </div>
                 </div>
@@ -231,7 +231,7 @@ const Lobby = (props) => {
                 </div>
             </div>
             {/* DRAWER */}
-            <div style={{ position: 'absolute', left: '100%', width: '20%', height: '100vh' }} ref={(e) => drawerRef = e}>
+            <div className={styles.chatBox} style={{ position: 'absolute', left: '100%', height: '100vh' }} ref={(e) => drawerRef = e}>
                 <div className={styles.drawerHeader}>
                     <ChevronRightIcon fontSize='large' style={{ cursor: 'pointer', marginLeft: '5%' }} onClick={closeDrawer} />
                 </div>

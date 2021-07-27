@@ -169,7 +169,7 @@ const TicTacToe = (props) => {
             <Result result={result} socket={socket} isAdmin={isAdmin} roomID={roomID} />
             <div className={styles.mainTTT} >
                 <div className={styles.gameArea}>
-                    <div style={{ height: '100vh', width: '80%' }}>
+                    <div className={styles.leftClassPanel} style={{ height: '100vh' }}>
                         <div className={styles.opponentPanel}>
                             <div className={styles.namePanel}>
                                 <div style={{ backgroundColor: 'rgb(58,90,255)' }}>
@@ -181,7 +181,7 @@ const TicTacToe = (props) => {
                             </div>
                         </div>
                         <div className={styles.gameBoard}>
-                            <div style={{ width: '70%', height: '60vh', marginLeft: '30%' }}>
+                            <div className={styles.gridPlacement}>
                                 <div style={{ display: 'flex', height: '33.33%' }}>
                                     <div className={styles.grid} style={{ flex: '1', borderRight: '3px solid black', borderBottom: '3px solid black' }} onClick={(e) => handleGridClick(e, 0, 0)}>
                                         {!gameState[0][0].user ? null
