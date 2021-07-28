@@ -1,61 +1,67 @@
-.lobbyPage{ 
+.lobbyPage {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100vh;
+    height: 100%;
     width: 100%;
-    overflow: hidden;
-    display: flex
- }
- .appBar{
+    overflow-x: hidden;
+    display: flex;
+}
+
+.appBar {
     background-color: #FF6701;
     height: 10vh;
     display: flex;
     align-items: center;
-    color:white;
+    color: white;
 }
-.innerAppBar{
+
+.innerAppBar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 90%;
     margin-left: 5%
 }
-.drawerHeader{
-    height:10vh;
-    background-color:rgb(35,29,43);
-    display:flex;
+
+.drawerHeader {
+    height: 10vh;
+    background-color: rgb(35, 29, 43);
+    display: flex;
     align-items: center;
-    color:white;
-    border:1px solid rgba(255, 255, 255, 0.6);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
+
 /* Lobby Body */
 
-.pane1, .pane2{
-    width:100%;
+.pane1, .pane2 {
+    width: 100%;
     height: 30vh;
-    display:flex;
+    display: flex;
     align-items: center;
-    position:relative;
+    position: relative;
     justify-content: space-between;
     margin-bottom: 5vh;
 }
-.gameList{
-    width:50%;
-    height:100%;
+
+.gameList {
+    width: 50%;
+    height: 100%;
     border-radius: 10px;
     backdrop-filter: saturate(100%) blur(5px);
     background-color: rgba(0, 0, 0, 0.7);
     animation: backgroundAnimation 6s infinite;
     animation-delay: 0.5;
-    display:flex;
-    align-items:center;
+    display: flex;
+    align-items: center;
     overflow-x: scroll;
     flex-shrink: 0
 }
-.aboutPanel{
-    width:30%;
-    height:100%;
+
+.aboutPanel {
+    width: 30%;
+    height: 100%;
     border-radius: 10px;
     backdrop-filter: saturate(100%) blur(5px);
     background-color: rgba(0, 0, 0, 0.7);
@@ -63,96 +69,132 @@
     animation-delay: 0.5;
 }
 
-.roomInfo{
-    width:30%;
-    height:100%;
+.roomInfo {
+    width: 30%;
+    height: 100%;
     backdrop-filter: saturate(100%) blur(5px);
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
-    color:white;
-    padding:16px;
+    color: white;
+    padding: 16px;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     animation: backgroundAnimation 6s infinite;
     animation-delay: 1;
 }
-.userList{
-    width:40%;
-    height:100%;
+
+.userList {
+    width: 40%;
+    height: 100%;
     backdrop-filter: saturate(100%) blur(5px);
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
     animation: backgroundAnimation 6s infinite;
     animation-delay: 1.5;
-    display:flex;
-    padding:16px;
-
+    display: flex;
+    padding: 16px;
 }
-.selectedGame{
-    height:30vh;
-    width:30vh;
+
+.selectedGame {
+    height: 30vh;
+    width: 30vh;
     backdrop-filter: saturate(100%) blur(5px);
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
     animation: backgroundAnimation 6s infinite;
     animation-delay: 2;
-    display:flex;
-    color:white;
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    display: flex;
+    color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     align-items: center;
     justify-content: center;
 }
 
-.startGame{
+.startGame {
     text-align: center;
 }
-.scrollbar::-webkit-scrollbar-track, .gameList::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: #F5F5F5;
+
+.scrollbar::-webkit-scrollbar-track, .gameList::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
     border-radius: 10px;
 }
 
-.scrollbar::-webkit-scrollbar, .gameList::-webkit-scrollbar
-{
-	width: 10px;
-	background-color: #F5F5F5;
+.scrollbar::-webkit-scrollbar, .gameList::-webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5;
     border-radius: 10px;
 }
 
-.scrollbar::-webkit-scrollbar-thumb, .gameList::-webkit-scrollbar-thumb
-{
-	background-color: #0ae;
+.scrollbar::-webkit-scrollbar-thumb, .gameList::-webkit-scrollbar-thumb {
+    background-color: #0ae;
     border-radius: 10px;
-	background-image: -webkit-gradient(linear, 0 0, 0 100%,
-	                   color-stop(.5, rgba(255, 255, 255, .2)),
-					   color-stop(.5, transparent), to(transparent));
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(.5, rgba(255, 255, 255, .2)), color-stop(.5, transparent), to(transparent));
 }
+
 @keyframes backgroundAnimation {
     from {
-      backdrop-filter: blur(30px) saturate(160%) brightness(130%);
-      background-color: rgba(0, 0, 0, 0.7);
-
+        backdrop-filter: blur(30px) saturate(160%) brightness(130%);
+        background-color: rgba(0, 0, 0, 0.7);
     }
-    25%{
+    25% {
         backdrop-filter: blur(10px) saturate(120%) brightness(100%);
         background-color: rgba(66, 31, 31, 0.7);
-
     }
     50% {
-      backdrop-filter: blur(10px) saturate(100%) brightness(90%);
-      background-color: rgba(25, 41, 70, 0.7);
-
+        backdrop-filter: blur(10px) saturate(100%) brightness(90%);
+        background-color: rgba(25, 41, 70, 0.7);
     }
-    75%{
+    75% {
         backdrop-filter: blur(5px) saturate(160%) brightness(130%);
         background-color: rgba(24, 46, 54, 0.7);
-
     }
     to {
         backdrop-filter: blur(30px) saturate(160%) brightness(130%);
         background-color: rgba(0, 0, 0, 0.7);
-
     }
-  }
+}
+
+.h1 {
+    font-size: 40px
+}
+
+.chatBox {
+    width: 20%
+}
+
+@media only screen and (max-width: 800px) {
+    .lobbyPage {
+        overflow: scroll
+    }
+    .h1 {
+        font-size: 24px
+    }
+    .pane1, .pane2 {
+        flex-direction: column;
+    }
+    .gameList, .gameList, .roomInfo, .userList {
+        width: 90%
+    }
+    .roomInfo {
+        min-height: 40vh;
+        margin-bottom: 5vh
+    }
+    .aboutPanel {
+        display: none
+    }
+    .userList {
+        margin-bottom: 5vh;
+    }
+    .selectedGame {
+        min-height: 30vh;
+        width: 90%;
+    }
+    .chatBox {
+        width: 100%
+    }
+    .startGame {
+        text-align: center;
+    }
+}
