@@ -113,7 +113,12 @@ const TicTacToe = (props) => {
                 }
                 setSelectedGlassIndex(-1);
             })
-            socket.on('returnToRoomFromTTT', () => setRedirect(true));
+            socket.on('returnToRoomFromTTT', ({ admin }) => {
+                if (admin) {
+                    setIsAdmin(true);
+                }
+                setRedirect(true)
+            });
         }
     }, [socket, room, username, opponentName]);
 
@@ -160,7 +165,7 @@ const TicTacToe = (props) => {
         return <Redirect
             to={{
                 pathname: "/lobby",
-                state: { roomID: props.location.state.roomID, username: props.location.state.username, isAdmin: props.location.state.isAdmin }
+                state: { roomID: props.location.state.roomID, username: props.location.state.username, isAdmin: isAdmin }
             }}
         />
     }

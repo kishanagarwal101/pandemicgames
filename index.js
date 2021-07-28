@@ -1,4 +1,4 @@
-//require('dotenv').config();
+require('dotenv').config();
 
 const express = require('express');
 const http = require('http');
@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
 
         socket.on('TTTReset', () => io.in(roomID).emit('TTTReset'));
         socket.on('disconnect', () => {
-            disconnectTTT();
+            disconnectTTT(username, roomID, socket);
         })
         socket.on('returnToRoomFromTTT', () => io.in(roomID).emit('returnToRoomFromTTT'))
     });
@@ -93,5 +93,4 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => console.log(`PORT: ${PORT}`));
-
 

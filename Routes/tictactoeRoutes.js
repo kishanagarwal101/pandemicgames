@@ -8,7 +8,6 @@ router.post('/joinTTT/:roomID', (req, res) => {
             console.error(err);
             return res.json({ code: 500, errCode: 500, message: 'Internal Server Error!' });
         }
-        console.log(updatedRoom);
         res.json({ code: 200, errCode: null, room: updatedRoom });
     });
 });
