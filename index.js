@@ -1,4 +1,4 @@
-require('dotenv').config();
+//require('dotenv').config();
 
 const express = require('express');
 const http = require('http');
@@ -7,10 +7,11 @@ const mongoose = require('mongoose');
 const roomModel = require('./Models/roomModel');
 const roomRoutes = require('./Routes/roomRoutes');
 const tictactoeRoutes = require('./Routes/tictactoeRoutes');
-
+const path = require('path');
 const joinGame = require('./Sockets/LobbySockets/joinGame');
 const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
 const handleTTTMove = require('./Sockets/GameSockets/TTT/handleTTTMove');
+const disconnectTTT = require('./Sockets/GameSockets/TTT/disconnectTTT');
 //DB Connection
 mongoose.connect(process.env.DBURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }, () => {
     console.log("Connected to Pandemic DB!")
@@ -84,6 +85,13 @@ app.get('/test', (req, res) => {
 });
 app.use('/', roomRoutes);
 app.use('/', tictactoeRoutes);
+
+app.use(express.static(path.join(__dirname, 'frontend', 'build')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+});
+
 server.listen(PORT, () => console.log(`PORT: ${PORT}`));
 
 
