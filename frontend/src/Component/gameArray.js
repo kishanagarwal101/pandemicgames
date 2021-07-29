@@ -5,7 +5,7 @@ const gameArray = [
         limit: null
     },
     {
-        name: 'Antaakshari',
+        name: 'Shazam',
         gameCode: 1,
         limit: null
     },
