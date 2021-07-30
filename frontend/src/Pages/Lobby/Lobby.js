@@ -29,7 +29,7 @@ const Lobby = (props) => {
     const [date, setDate] = useState('24 July, 2021');
     const [time, setTime] = useState('01:29 am');
     const [selectedGame, setSelectedGame] = useState(-1);
-    const [redirect, setRedirect] = useState(false);
+    const [redirect, setRedirect] = useState('');
 
 
     let mainRef = useRef(null);
@@ -89,7 +89,11 @@ const Lobby = (props) => {
 
             socket.on('TTTStart', () => {
                 socket.disconnect();
-                setRedirect(true)
+                setRedirect('tictactoe');
+            });
+            socket.on('ShazamStart', () => {
+                socket.disconnect();
+                setRedirect('shazam');
             });
             return () => {
                 setSocket(null);
@@ -132,7 +136,8 @@ const Lobby = (props) => {
         if (selectedGame === -1) return toast('Select a Game to Start!');
         if (users.length === 1) return toast('You Need More Players(1)!');
         if (!gameArray[selectedGame].limit) {
-            return toast('START GAME');
+            if (gameArray[selectedGame].gameCode === 1)
+                return socket.emit('startGame', { gameCode: selectedGame, room });
         }
 
         if (users.length > gameArray[selectedGame].limit) return toast(`This game has a ${gameArray[selectedGame].limit} player Limit!`);
@@ -155,7 +160,7 @@ const Lobby = (props) => {
     if (redirect) {
         return <Redirect
             to={{
-                pathname: "/tictactoe",
+                pathname: `/${redirect}`,
                 state: { roomID: roomID, username: username, isAdmin: isAdmin }
             }}
         />
