@@ -7,10 +7,12 @@ const mongoose = require('mongoose');
 const roomModel = require('./Models/roomModel');
 const roomRoutes = require('./Routes/roomRoutes');
 const tictactoeRoutes = require('./Routes/tictactoeRoutes');
-
+const path = require('path');
 const joinGame = require('./Sockets/LobbySockets/joinGame');
 const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
 const handleTTTMove = require('./Sockets/GameSockets/TTT/handleTTTMove');
+const disconnectTTT = require('./Sockets/GameSockets/TTT/disconnectTTT');
+const axios = require('axios').default;
 //DB Connection
 mongoose.connect(process.env.DBURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }, () => {
     console.log("Connected to Pandemic DB!")
@@ -64,7 +66,7 @@ io.on('connection', (socket) => {
 
         socket.on('TTTReset', () => io.in(roomID).emit('TTTReset'));
         socket.on('disconnect', () => {
-            disconnectTTT();
+            disconnectTTT(username, roomID, socket);
         })
         socket.on('returnToRoomFromTTT', () => io.in(roomID).emit('returnToRoomFromTTT'))
     });
@@ -84,6 +86,14 @@ app.get('/test', (req, res) => {
 });
 app.use('/', roomRoutes);
 app.use('/', tictactoeRoutes);
-server.listen(PORT, () => console.log(`PORT: ${PORT}`));
 
+app.use(express.static(path.join(__dirname, 'frontend', 'build')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+});
+
+server.listen(PORT, () => {
+    console.log(`PORT: ${PORT}`)
+});
 
