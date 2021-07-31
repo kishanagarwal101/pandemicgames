@@ -1,0 +1,20 @@
+{
+    "single":[
+        "What is $NAME$'s go-to pickup line?",
+        "How did $NAME$ lose/will lose their virginity?",
+        "What would $NAME$'s slogan would be, if they were running for president?",
+        "What would be $NAME$'s Pornstar Name?",
+        "What is a biggest lie $NAME$'s ever told?",
+        "What is $NAME$'s favourite thing to do?",
+        "What would be $NAME$'s job if they were involved in a prostitution ring?",
+        "What would be $NAME$'s job if they were involved in a drug ring?",
+        "If $NAME$ was a doctor, what would be their speciality?",
+        "When would $NAME$ get Married?"   
+    ],
+    "couple":[
+        "Who would be the dominant one if $NAME1$ and $NAME2$ got married?",
+        "What would happen if $NAME1$ and $NAME2$ got stuck in the same room for a whole day?",
+        "What would $NAME1$ and $NAME2$'s baby be like?",
+        "What would be a business that $NAME1$ and $NAME2$ might start?"
+    ]
+}

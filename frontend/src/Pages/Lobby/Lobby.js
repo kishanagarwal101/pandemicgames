@@ -95,6 +95,10 @@ const Lobby = (props) => {
                 socket.disconnect();
                 setRedirect('shazam');
             });
+            socket.on('psychStart', ()=>{
+                socket.disconnect();
+                setRedirect('psych');
+            })
             return () => {
                 setSocket(null);
                 setUsername('');
@@ -137,6 +141,8 @@ const Lobby = (props) => {
         if (users.length === 1) return toast('You Need More Players(1)!');
         if (!gameArray[selectedGame].limit) {
             if (gameArray[selectedGame].gameCode === 1)
+                return socket.emit('startGame', { gameCode: selectedGame, room });
+            if(gameArray[selectedGame].gameCode === 2)
                 return socket.emit('startGame', { gameCode: selectedGame, room });
         }
 
