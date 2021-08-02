@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import SocketIOClient from "socket.io-client";
+import Chat from "../../Component/Chat/Chat";
 import POST from "../../Requests/POST";
+import styles from "./Wxyz.module.css";
+import { Redirect } from 'react-router-dom';
 
 const Wxyz = (props) => {
   const [socket, setSocket] = useState(null);
@@ -10,6 +13,7 @@ const Wxyz = (props) => {
   const [messages, setMessages] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [roomID, setRoomID] = useState(null);
+  const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
     const socket = SocketIOClient("/");
@@ -33,10 +37,43 @@ const Wxyz = (props) => {
     props.location.state.isAdmin,
     props.location.state.roomID,
   ]);
+
+  useEffect(() => {
+    if (socket) {
+        socket.on('userJoinedWXYZ', ({ users, username }) => {
+            console.log(`${username} Joined!`);
+            setMessages(prev => [...prev, { username: 'SYSTEM', message: `${username} Joined!` }]);
+            setUsers(users);
+        });
+
+        socket.on('chatMessage', (payload) => setMessages(prev => [...prev, payload]));
+
+        socket.on('returnToRoomFromWXYZ', ({ admin }) => {
+          if (admin) {
+              setIsAdmin(true);
+          }
+          setRedirect(true)
+        });
+      }
+    },[socket,username]);
+
+
+
+  if (redirect) {
+    return <Redirect
+        to={{
+            pathname: "/lobby",
+            state: { roomID: props.location.state.roomID, username: props.location.state.username, isAdmin: isAdmin }
+        }}
+    />
+  }
+  
+
   return (
     <div>
-       Wxyz
-      <p>hello</p>
+      <div className={styles.chatArea}>
+        <Chat socket={socket} username={username} messages={messages} />
+      </div>
     </div>
   );
 };
