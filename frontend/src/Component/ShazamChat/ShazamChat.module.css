@@ -1,0 +1,19 @@
+.chatBox {
+  width: 100%;
+  word-wrap: break-word;
+  overflow-y: auto;
+  font-size: 16px;
+  margin-bottom: 2px;
+  font-family: "Source Sans Pro", sans-serif;
+}
+.chatBox p {
+  word-wrap: break-word;
+}
+
+.chatMessage {
+  height: auto;
+  width: 90%;
+
+  white-space: pre-line;
+  font-family: ;
+}

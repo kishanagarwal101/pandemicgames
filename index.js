@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const roomModel = require('./Models/roomModel');
 const roomRoutes = require('./Routes/roomRoutes');
 const tictactoeRoutes = require('./Routes/tictactoeRoutes');
+const shazamRoutes = require('./Routes/shazamRoutes');
 const path = require('path');
 const joinGame = require('./Sockets/LobbySockets/joinGame');
 const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
@@ -32,7 +33,6 @@ app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
-
     next();
 });
 
@@ -70,13 +70,17 @@ io.on('connection', (socket) => {
         })
         socket.on('returnToRoomFromTTT', () => io.in(roomID).emit('returnToRoomFromTTT'))
     });
+    socket.on('userJoinedShazam', ({ users, roomID, username }) => {
+        socket.join(roomID);
+        console.log(`${socket.id} Joined Shazam`);
+        socket.to(roomID).emit('userJoinedShazam', { users, username });
+        socket.on('ShazamChatMessage', (payload) => io.in(roomID).emit('ShazamChatMessage', payload));
+        socket.on('ShazamChatMessageGuessed', (payload) => io.in(roomID).emit('ShazamChatMessageGuessed', payload));
+        socket.on('ShazamUserCorrectGuess', (payload) => socket.to(roomID).emit('ShazamUserCorrectGuess', payload));
+        socket.on('ShazamStart', () => io.in(roomID).emit('ShazamStart'));
+    })
 });
 
-//@ Reponse Object JSON Format
-//@ Every Object must have:
-//@ {code:Number, errCode: Number || null, message:String}
-//@ Additional Params: any || null
-//Test Route
 app.get('/test', (req, res) => {
     res.json({
         code: 200,
@@ -86,7 +90,7 @@ app.get('/test', (req, res) => {
 });
 app.use('/', roomRoutes);
 app.use('/', tictactoeRoutes);
-
+app.use('/', shazamRoutes);
 app.use(express.static(path.join(__dirname, 'frontend', 'build')));
 
 app.get('*', (req, res) => {

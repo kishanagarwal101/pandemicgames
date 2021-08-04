@@ -31,7 +31,7 @@ const Chat = (props) => {
                             onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
                         />
                     </div>
-                    <div><SendIcon style={{ color: '#FF6701', cursor: 'pointer' }} onClick={sendChatMessage} /></div>
+                    <div><SendIcon style={{ color: '#FF6701', cursor: 'pointer' }} /></div>
                 </div>
             </div>
         </div>

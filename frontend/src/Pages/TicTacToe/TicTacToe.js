@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import POST from './../../Requests/POST';
+import GET from './../../Requests/GET';
 import SocketIOClient from 'socket.io-client';
 import styles from './TicTacToe.module.css';
 import Chat from '../../Component/Chat/Chat';

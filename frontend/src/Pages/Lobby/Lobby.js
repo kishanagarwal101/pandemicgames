@@ -134,7 +134,7 @@ const Lobby = (props) => {
 
     const attemptStartGame = () => {
         if (selectedGame === -1) return toast('Select a Game to Start!');
-        if (users.length === 1) return toast('You Need More Players(1)!');
+        // if (users.length === 1) return toast('You Need More Players(1)!');
         if (!gameArray[selectedGame].limit) {
             if (gameArray[selectedGame].gameCode === 1)
                 return socket.emit('startGame', { gameCode: selectedGame, room });
