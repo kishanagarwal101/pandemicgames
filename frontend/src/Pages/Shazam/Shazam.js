@@ -63,29 +63,28 @@ const Shazam = (props) => {
                 console.log(`${username} Joined!`);
                 setUsers(users);
             });
-            socket.on('ShazamChatMessage', (payload) => setMessages(prev => [...prev, payload]));
-            socket.on('ShazamChatMessageGuessed', (payload) => {
-                if (hasGuessed)
-                    setMessages(prev => [...prev, payload]);
-            })
-            socket.on('ShazamUserCorrectGuess', (payload) => {
-                setMessages(prev => [...prev, payload]);
-            })
+            socket.on('ShazamChatMessage', (payload) => {
+                console.log(payload);
+                if (hasGuessed === true)
+                    setMessages(prev => [...prev, payload])
+                else if (hasGuessed === payload.afterGuess)
+                    setMessages(prev => [...prev, payload])
+            });
             socket.on('ShazamStart', () => {
                 play();
             })
         }
-    }, [socket])
+    }, [socket, hasGuessed])
     const sendChatMessage = async () => {
         if (!text) return;
         if (text === songName) {
             setHasGuessed(true);
             setMessages(prev => [...prev, { username: username, message: text, guess: true, afterGuess: false }])
-            socket.emit('ShazamUserCorrectGuess', { username: username, message: text, guess: false, afterGuess: true, userCorrectGuess: true })
+            socket.emit('ShazamChatMessage', { username: username, message: text, guess: true, afterGuess: false, userCorrectGuess: true })
         }
         else {
             if (hasGuessed)
-                socket.emit('ShazamChatMessageGuessed', { username: username, message: text, guess: false, afterGuess: true, userCorrectGuess: false });
+                socket.emit('ShazamChatMessage', { username: username, message: text, guess: false, afterGuess: true, userCorrectGuess: false });
             else
                 socket.emit('ShazamChatMessage', { username: username, message: text, guess: false, afterGuess: false, userCorrectGuess: false });
         }

@@ -74,9 +74,9 @@ io.on('connection', (socket) => {
         socket.join(roomID);
         console.log(`${socket.id} Joined Shazam`);
         socket.to(roomID).emit('userJoinedShazam', { users, username });
-        socket.on('ShazamChatMessage', (payload) => io.in(roomID).emit('ShazamChatMessage', payload));
-        socket.on('ShazamChatMessageGuessed', (payload) => io.in(roomID).emit('ShazamChatMessageGuessed', payload));
-        socket.on('ShazamUserCorrectGuess', (payload) => socket.to(roomID).emit('ShazamUserCorrectGuess', payload));
+        socket.on('ShazamChatMessage', (payload) => {
+            io.in(roomID).emit('ShazamChatMessage', payload)
+        });
         socket.on('ShazamStart', () => io.in(roomID).emit('ShazamStart'));
     })
 });
