@@ -77,7 +77,14 @@ io.on('connection', (socket) => {
         socket.on('ShazamChatMessage', (payload) => {
             io.in(roomID).emit('ShazamChatMessage', payload)
         });
-        socket.on('ShazamStart', () => io.in(roomID).emit('ShazamStart'));
+        socket.on('ShazamChatMessageAfterGuess', (payload) => {
+            io.in(roomID).emit('ShazamChatMessageAfterGuess', payload)
+        });
+        socket.on('ShazamStart', (songListLength) => {
+            let number = Math.floor(Math.random() * (songListLength));
+            console.log(number);
+            io.in(roomID).emit('ShazamStart', number)
+        });
     })
 });
 

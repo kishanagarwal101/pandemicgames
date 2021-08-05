@@ -14,8 +14,19 @@ const play = () => {
 
 }
 
+
 const Shazam = (props) => {
 
+    const startShazam = (number) => {
+        console.log(songList, number, 'HELLO')
+        setSongUrl(songList[number].media_url);
+        setSongName(songList[number].albumm);
+        console.log(startButton.current.style)
+        startButton.current.style.display = 'none';
+        setTimeout(() => {
+            play();
+        }, 3000)
+    }
     const [socket, setSocket] = useState(null);
     const [room, setRoom] = useState({ users: [] });
     const [users, setUsers] = useState([]);
@@ -28,10 +39,13 @@ const Shazam = (props) => {
     const [text, setText] = useState('');
     const [hasGuessed, setHasGuessed] = useState(false);
     const [songName, setSongName] = useState('apple');
-
+    const [numberOfCorrectGuesses, setNumberOfCorrectGuesses] = useState(0);
+    const scrollRef = useRef(null);
     let countDown = useRef(null);
+    const startButton = useRef(null);
     const startGame = () => {
-        socket.emit('ShazamStart');
+        console.log(songList, 'Namaste');
+        socket.emit('ShazamStart', songList.length);
     }
     useEffect(() => {
         const socket = SocketIOClient("/");
@@ -53,10 +67,11 @@ const Shazam = (props) => {
             })
         GET('/getSongList')
             .then(res => {
-                console.log(res);
-                setSongList(res.songList);
+                console.log(res.songList, 'JAJA');
+                setSongList(() => { return res.songList });
             })
     }, [props.location.state.roomID, props.location.state.isAdmin, props.location.state.username,]);
+
     useEffect(() => {
         if (socket) {
             socket.on('userJoinedShazam', ({ users, username }) => {
@@ -64,22 +79,27 @@ const Shazam = (props) => {
                 setUsers(users);
             });
             socket.on('ShazamChatMessage', (payload) => {
-                console.log(payload);
-                if (hasGuessed === true)
-                    setMessages(prev => [...prev, payload])
-                else if (hasGuessed === payload.afterGuess)
-                    setMessages(prev => [...prev, payload])
+                setMessages(prev => [...prev, payload])
+                if (payload.userCorrectGuess === true)
+                    setNumberOfCorrectGuesses(prev => { return prev + 1 });
             });
-            socket.on('ShazamStart', () => {
-                play();
+            socket.on('ShazamStart', (number) => {
+                startShazam(number);
             })
         }
-    }, [socket, hasGuessed])
+    }, [socket])
+    useEffect(() => {
+        console.log(songName);
+        console.log(songUrl);
+        console.log(songList)
+    })
+    useEffect(() => {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }, [messages.length])
     const sendChatMessage = async () => {
         if (!text) return;
         if (text === songName) {
             setHasGuessed(true);
-            setMessages(prev => [...prev, { username: username, message: text, guess: true, afterGuess: false }])
             socket.emit('ShazamChatMessage', { username: username, message: text, guess: true, afterGuess: false, userCorrectGuess: true })
         }
         else {
@@ -92,7 +112,7 @@ const Shazam = (props) => {
     }
 
     const userList = users.map((m, i) => <UserListShazam user={users[i]} key={i} index={i + 1} />)
-    const messageBlock = messages.map((m, i) => <ShazamChat username={m.username} message={m.message} key={i} index={i + 1} guess={m.guess} afterGuess={m.afterGuess} myUsername={username} userCorrectGuess={m.userCorrectGuess} />)
+    const messageBlock = messages.map((m, i) => <ShazamChat username={m.username} message={m.message} key={i} index={i + 1} guess={m.guess} afterGuess={m.afterGuess} myUsername={username} userCorrectGuess={m.userCorrectGuess} hasGuessed={hasGuessed} />)
 
     return (
         <div className={styles.mainDiv} >
@@ -114,10 +134,10 @@ const Shazam = (props) => {
                     </audio>
                     <div style={{ width: '70%', height: '40px', backgroundColor: 'beige' }}
                         onClick={play}> </div>
-                    <div style={{ display: isAdmin ? 'flex' : 'none' }} className={styles.startButton} onClick={startGame}> START</div>
+                    <div style={{ display: isAdmin ? 'flex' : 'none' }} className={styles.startButton} onClick={startGame} ref={startButton}> START</div>
                 </div>
                 <div className={styles.chatArea}>
-                    <div className={styles.messageArea}>
+                    <div className={styles.messageArea} ref={scrollRef}>
                         {messageBlock}
                     </div>
                     <div className={styles.inputArea}>
@@ -131,7 +151,7 @@ const Shazam = (props) => {
                                 onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
                             />
                         </div>
-                        <div><SendIcon style={{ color: '#291212', cursor: 'pointer' }} /></div>
+                        <div><SendIcon style={{ color: '#291212', cursor: 'pointer' }} onClick={sendChatMessage} /></div>
                     </div>
 
                 </div>

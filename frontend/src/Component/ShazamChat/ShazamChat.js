@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ShazamChat.module.css'
 const ShazamChat = (props) => {
-    if (props.userCorrectGuess)
+    if (props.userCorrectGuess) {
         return (
             <div className={styles.chatBox}  >
                 <p style={{ color: '#1c9600', textAlign: 'center' }}>
@@ -9,7 +9,10 @@ const ShazamChat = (props) => {
                 </p>
             </div>
         )
-    else
+    }
+    else if (props.hasGuessed === false && props.afterGuess === true)
+        return (null);
+    else {
         return (
             <div className={styles.chatBox} >
                 <p style={{
@@ -18,10 +21,11 @@ const ShazamChat = (props) => {
                 }}>
                     <b>{props.username === props.myUsername ? 'You:' : props.username + ': '} </b>
                     <span>
-                        {props.message} {props.guess === true ? '  (Right answer!!)' : ''}
+                        {props.message} {props.c}
                     </span>
                 </p>
             </div>
         )
+    }
 }
 export default ShazamChat;

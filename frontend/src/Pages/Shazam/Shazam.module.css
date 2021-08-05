@@ -112,7 +112,9 @@
   font-weight: bold;
   text-shadow: 2px 2px 3px black;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.404);
+  cursor: pointer;
 }
+
 .chatArea {
   position: relative;
   background-color: rgb(255, 183, 101);
@@ -124,7 +126,8 @@
   height: 90%;
   overflow-y: scroll;
   background-color: blanchedalmond;
-  overflow-y: hidden;
+  overflow-x: hidden;
+  padding-left: 2px;
 }
 
 .messageArea::-webkit-scrollbar {
