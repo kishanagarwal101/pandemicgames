@@ -1,0 +1,202 @@
+@import url("https://fonts.googleapis.com/css?family=Work+Sans:400,700,900");
+
+.background{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height:100vh;
+    background-color: rgb(255, 226, 188);
+}
+.mainContainer{
+    position: absolute;
+    top:5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width:95%;
+    height:90vh;
+    background-color: rgb(255, 171, 74);
+    display:flex;
+
+}
+.userList, .chatContainer{
+    width:20%;
+    background-color: rgb(22, 39, 53);
+
+}
+.gameContainer{
+    width:60%;
+    display:flex;
+    flex-direction: column;
+}
+.userList{
+    padding:8px;
+    overflow-y:scroll;
+}
+.userList::-webkit-scrollbar{
+    display:none;
+}
+.heading{
+    text-align:center;
+    color:rgb(255, 226, 188);
+    font-family: 'KGHAPPY';
+    font-size:2em;
+}
+.psych{
+    font-size: 52px;
+    font-family:'strikefighter';
+    text-align: center;
+}
+.gameArea{
+    flex:1;
+    width:90%;
+    position:relative;
+    margin:auto;
+}
+
+
+
+.button {
+  display: inline-block;
+  border: 0.2em solid;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  opacity: 0.6;
+  color: black;
+  position: absolute;
+  top: 50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  font-size:40px;
+  user-select:none;
+  
+}
+.buttonText {
+  display: block;
+  padding: 1em 2em;
+  text-transform: uppercase;
+  font-weight: bold;
+  user-select:none;
+
+}
+.buttonText:before {
+  content: attr(title);
+  user-select:none;
+
+}
+
+.buttonMask {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+  transform: translateX(-100%) rotate(45deg);
+  transition: all 0.3s;
+  user-select:none;
+
+}
+
+.button:hover {
+  opacity: 1;
+}
+.button:hover .buttonText {
+  -webkit-animation: fx-text 0.3s ease-out;
+          animation: fx-text 0.3s ease-out;
+}
+.button:hover .buttonMask {
+  -webkit-animation: fx-mask 0.3s ease-out;
+          animation: fx-mask 0.3s ease-out;
+}
+
+.button:active {
+  opacity: 1;
+  background: black;
+  color: inherit;
+}
+
+.questionPrompt, .answerPanel{
+  width:80%;
+  margin: auto;
+  padding:6px;
+  min-height: 20vh;
+  background-color: rgb(22, 39, 53);
+  margin-top: 5vh;
+  margin-bottom:5vh;
+}
+.submit button{
+  width:25%;
+  position: absolute;
+  bottom:10%;
+  right:10%;
+  padding:12px;
+  outline:none;
+  border:none;
+  font-family:'strikefighter';
+  font-weight: 100;
+  background-color: transparent;
+  border: 4px solid rgb(22, 39, 53);
+  color:rgb(22, 39, 53);
+  cursor:pointer;
+
+}
+@-webkit-keyframes fx-mask {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+@keyframes fx-mask {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+@-webkit-keyframes fx-text {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(1em);
+    opacity: 0;
+  }
+}
+@keyframes fx-text {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(1em);
+    opacity: 0;
+  }
+}
+@-webkit-keyframes fx-text-bis {
+  0% {
+    transform: translateX(-1em);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes fx-text-bis {
+  0% {
+    transform: translateX(-1em);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

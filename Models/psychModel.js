@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     username: { type: String },
     isAdmin: { type: Boolean },
-    score: { type: Number }
+    points: { type: Number },
+    prompt: { type: String}
 });
 
 const psychSchema = mongoose.Schema({
