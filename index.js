@@ -77,10 +77,7 @@ io.on('connection', (socket) => {
         socket.join(roomID);
         console.log(`${socket.id} Joined Psych`);
         socket.to(roomID).emit('userJoinedPsych', { users, username });
-        socket.on('chatMessagePsych', (payload) => {
-            io.in(roomID).emit('chatMessagePsych', payload);
-            console.log(payload);
-        });
+        socket.on('chatMessage', (payload) => io.in(roomID).emit('chatMessage', payload));
         socket.on('gameInitialized', ()=>io.in(roomID).emit('gameInitialized'));
         socket.on('roundStart', ()=>{
             psychRoundStart(io, roomID);

@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import SendIcon from '@material-ui/icons/Send';
+import React, {useEffect, useState} from 'react';
 import SocketIOClient from 'socket.io-client';
 import POST from '../../Requests/POST';
+import Chat from '../../Component/Chat/Chat';
 import styles from './Psych.module.css'; 
 import LeaderboardCard from './Leaderboard';
-import Message from '../../Component/Message/Message';
 const Psych = (props) => {
     const [username, setUsername] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
@@ -19,9 +18,7 @@ const Psych = (props) => {
     const [gameState, setGameState] = useState([]);
     const [roundQuestion, setRoundQuestion] = useState('');
     const [value, setValue] = useState('');
-    const [text, setText] = useState('');
-
-    let scrollRef = useRef(null);
+    
     useEffect(() => {
         const socket = SocketIOClient('/');
         setSocket(socket);
@@ -43,9 +40,7 @@ const Psych = (props) => {
             });
 
     }, [props.location.state.roomID, props.location.state.isAdmin, props.location.state.username]);
-    useEffect(() => {
-        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }, [messages.length])
+
     useEffect(()=>{
         if(socket){
             socket.on('userJoinedPsych', (payload) => {
@@ -77,13 +72,10 @@ const Psych = (props) => {
     }, [socket, isAdmin, users]);
 
     useEffect(()=>{
-        if(socket){
-            socket.on('chatMessagePsych', (payload) => {
-                const newArr = [...messages, payload];
-                setMessages(newArr)
-            });
-        }
-    }, [socket, messages]);
+        if(socket)
+            socket.on('chatMessage', (payload) => setMessages(prev => [...prev, payload]));
+
+    }, [socket]);
 
     const sendResponse = ()=>{
         if(!value)return;
@@ -96,15 +88,7 @@ const Psych = (props) => {
         setValue('');
 
     }
-    const sendChatMessage = () => {
-        if (!text) return;
-        socket.emit('chatMessagePsych', { username: username, message: text });
-        setText('');
-    }
-    
     const LeaderboardComponent = gameState.sort((a, b)=>b.points-a.points).map((m, i)=><LeaderboardCard position={i+1} name={m.username} points={m.points} prompt={m.prompt} key={i}/>)
-    const messageGroup = messages.map((m, i) => <Message username={m.username} message={m.message} key={i} myUsername={username} />)
-
     return ( 
         <div className={styles.background}>
             <div className={styles.mainContainer}>
@@ -134,26 +118,7 @@ const Psych = (props) => {
                 <div className={styles.psych}>PSYCH</div>
             </div>
             <div className={styles.chatContainer}>
-            <div style={{ height: '100%', width: '100%' }}>
-            <div className={styles.messageContainer} ref={scrollRef}>
-                {messageGroup}
-            </div>
-            <div className={styles.inputContainer}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '90%' }}>
-                    <div style={{ flex: 1 }}>
-                        <input
-                            type="text"
-                            placeholder="Type a Message..."
-                            className={styles.input}
-                            value={text}
-                            onChange={(e) => setText(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
-                        />
-                    </div>
-                    <div><SendIcon style={{ color: '#FF6701', cursor: 'pointer' }} onClick={sendChatMessage} /></div>
-                </div>
-            </div>
-        </div>
+                <Chat socket={socket} username={username} messages={messages} />
             </div>
         </div>
         </div>
