@@ -18,6 +18,25 @@ router.get('/getSongList', (req, res) => {
             const songList = response.data.songs;
             return res.json({ code: 200, errCode: null, songList: songList });
         })
-
+})
+router.post('/updateShazamScore/:roomID', (req, res) => {
+    let username = req.body.username;
+    let score = req.body.score;
+    shazamModel.findOneAndUpdate({
+        "roomID": req.params.roomID,
+        "users.username": username,
+    }, {
+        "$set": {
+            "users.$.score": score
+        }
+    }, { new: true }, function (error, success) {
+        if (error) {
+            console.log(error)
+            return res.json({ code: 500, errCode: 500, message: 'Internal Server Error!' });
+        }
+        else {
+            res.json({ code: 200, errCode: null, room: success });
+        }
+    })
 })
 module.exports = router;

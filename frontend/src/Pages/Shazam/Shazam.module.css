@@ -113,6 +113,55 @@
   text-shadow: 2px 2px 3px black;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.404);
   cursor: pointer;
+  z-index: 1;
+}
+.buttonContainer {
+  display: flex;
+  width: 100%;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 20px;
+  flex: 2;
+  display: flex;
+}
+.musicPartyButton {
+  background-color: #5c3600;
+  position: relative;
+  font-size: 20px;
+  border-radius: 4px;
+  color: whitesmoke;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  text-shadow: 2px 2px 3px black;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.404);
+  cursor: pointer;
+  z-index: 2;
+  margin: 10px;
+  padding: 5px;
+  overflow: hidden;
+}
+.timerBar {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  background-color: #ff6701;
+  height: 100%;
+  z-index: -1;
+}
+
+.nextRoundButton {
+  background-color: #f76403;
+  font-size: 20px;
+  border-radius: 4px;
+  color: whitesmoke;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  text-shadow: 2px 2px 3px black;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.404);
+  cursor: pointer;
+  z-index: 2;
+  margin: 10px;
+  padding: 5px;
 }
 
 .chatArea {

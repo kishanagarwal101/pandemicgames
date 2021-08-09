@@ -15,7 +15,10 @@ const Message = (props) => {
         <div style={{ height: '10vh', display: 'flex', alignItems: 'center', justifyContent: sender ? 'flex-end' : 'flex-start', width: '90%', margin: 'auto', marginTop: '10px', marginBottom: '10px' }}>
             <div style={{ color: 'white', width: '70%', padding: '12px', backgroundColor: sender ? '#FF6701' : '#3A2E3C', borderRadius: '12px' }}>
                 <div style={{ fontWeight: 'bold', fontFamily: 'monospace' }}>{sender ? "You" : props.username}</div>
-                <div style={{ fontFamily: 'Franklin Gothic Medium', fontSize: "12px" }}>{props.message}</div>
+                <div style={{
+                    fontFamily: 'Franklin Gothic Medium', fontSize: "12px",
+                    wordWrap: 'break-word'
+                }}>{props.message}</div>
             </div>
         </div>
     );
