@@ -8,7 +8,7 @@ const psychRoundStart = async (io, roomID)=>{
     const NAME1 = getRandomFromArray(room.users);
     let NAME2 = getRandomFromArray(room.users);
     while(NAME1.username===NAME2.username)NAME2 = getRandomFromArray(room.users);
-
+    
     const roundQuestion = question.replace("$NAME1$", NAME1.username).replace("$NAME2$", NAME2.username);
 
     io.in(roomID).emit('roundStart', {

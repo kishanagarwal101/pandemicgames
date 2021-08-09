@@ -13,7 +13,8 @@ const joinGame = require('./Sockets/LobbySockets/joinGame');
 const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
 const handleTTTMove = require('./Sockets/GameSockets/TTT/handleTTTMove');
 const disconnectTTT = require('./Sockets/GameSockets/TTT/disconnectTTT');
-const psychRoundStart = require('./Sockets/GameSockets/Psych/psychRoundStart')
+const psychRoundStart = require('./Sockets/GameSockets/Psych/psychRoundStart');
+const psychRoundGuess = require('./Sockets/GameSockets/Psych/psychRoundGuess');
 //DB Connection
 mongoose.connect(process.env.DBURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }, () => {
     console.log("Connected to Pandemic DB!")
@@ -76,11 +77,17 @@ io.on('connection', (socket) => {
         socket.join(roomID);
         console.log(`${socket.id} Joined Psych`);
         socket.to(roomID).emit('userJoinedPsych', { users, username });
-        socket.on('chatMessage', (payload) => io.in(roomID).emit('chatMessage', payload));
+        socket.on('chatMessagePsych', (payload) => {
+            io.in(roomID).emit('chatMessagePsych', payload);
+            console.log(payload);
+        });
         socket.on('gameInitialized', ()=>io.in(roomID).emit('gameInitialized'));
         socket.on('roundStart', ()=>{
             psychRoundStart(io, roomID);
         });
+        socket.on('roundGuess', (payload)=>{
+            psychRoundGuess(io, payload.gameState, payload.username, payload.value, roomID);
+        })
     });
 });
 
