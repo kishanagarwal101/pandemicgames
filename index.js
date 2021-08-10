@@ -15,6 +15,7 @@ const handleTTTMove = require('./Sockets/GameSockets/TTT/handleTTTMove');
 const disconnectTTT = require('./Sockets/GameSockets/TTT/disconnectTTT');
 const psychRoundStart = require('./Sockets/GameSockets/Psych/psychRoundStart');
 const psychRoundGuess = require('./Sockets/GameSockets/Psych/psychRoundGuess');
+const psychRoundVote = require('./Sockets/GameSockets/Psych/psychRoundVote');
 //DB Connection
 mongoose.connect(process.env.DBURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }, () => {
     console.log("Connected to Pandemic DB!")
@@ -84,6 +85,9 @@ io.on('connection', (socket) => {
         });
         socket.on('roundGuess', (payload)=>{
             psychRoundGuess(io, payload.gameState, payload.username, payload.value, roomID);
+        });
+        socket.on('psychRoundvote', (payload)=>{
+            psychRoundVote(io, payload, roomID);
         })
     });
 });

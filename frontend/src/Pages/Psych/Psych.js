@@ -4,6 +4,7 @@ import POST from '../../Requests/POST';
 import Chat from '../../Component/Chat/Chat';
 import styles from './Psych.module.css'; 
 import LeaderboardCard from './Leaderboard';
+import PsychVote from '../../Component/PsychVote/PsychVote';
 const Psych = (props) => {
     const [username, setUsername] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
@@ -18,7 +19,7 @@ const Psych = (props) => {
     const [gameState, setGameState] = useState([]);
     const [roundQuestion, setRoundQuestion] = useState('');
     const [value, setValue] = useState('');
-    
+    const [selectedVote, setSelectedVote] = useState(null);
     useEffect(() => {
         const socket = SocketIOClient('/');
         setSocket(socket);
@@ -29,7 +30,9 @@ const Psych = (props) => {
             username: props.location.state.username,
             isAdmin: props.location.state.isAdmin,
             points:0,
-            prompt: ''
+            prompt: '',
+            vote:[],
+            hasVoted:false
         }
         POST(`/joinPsych/${props.location.state.roomID}`, payload)
             .then(res => {
@@ -59,6 +62,7 @@ const Psych = (props) => {
                 setGameState(initGameState);
                 setRoundQuestion(payload.roundQuestion);
                 setStatus(1);
+                setSelectedVote(null);
 
             });
             socket.on('roundGuess', (updatedGameState)=>{
@@ -66,6 +70,12 @@ const Psych = (props) => {
             })
             socket.on('startVoting', ()=>{
                 setStatus(3);
+            })
+            socket.on('psychRoundVote', (payload)=>{
+                setGameState(payload.gameState);
+            });
+            socket.on('showResults', ()=>{
+                setStatus(5); 
             })
 
         }
@@ -88,7 +98,18 @@ const Psych = (props) => {
         setValue('');
 
     }
+    const vote = ()=>{
+        if(!selectedVote)return;
+        socket.emit('psychRoundvote', {
+            voter:username,
+            votee: selectedVote.username,
+            gameState: gameState
+        });
+        setStatus(4)
+    }
     const LeaderboardComponent = gameState.sort((a, b)=>b.points-a.points).map((m, i)=><LeaderboardCard position={i+1} name={m.username} points={m.points} prompt={m.prompt} key={i}/>)
+    const votingBooth = gameState.map((m, i)=><PsychVote data={m} key={i} selectedVote={selectedVote} setSelectedVote={setSelectedVote} myUsername={username}/>)
+    console.log(gameState)
     return ( 
         <div className={styles.background}>
             <div className={styles.mainContainer}>
@@ -107,12 +128,21 @@ const Psych = (props) => {
                     <div className={styles.submit} style={{display:status===1?'block':'none'}}><button onClick={sendResponse}>Submit</button></div>
 
 
-                    <div className={styles.button} style={{display: status===0 || status===2?'block':'none'}} onClick={()=>(status===0)&&isAdmin && socket.emit('gameInitialized')}>
+                    <div className={styles.button} style={{display: status===0 || status===2 || status===4?'block':'none'}} onClick={()=>(status===0)&&isAdmin && socket.emit('gameInitialized')}>
                         <span className={styles.buttonMask}></span>
                         <span className={styles.buttonText}>
                             {status===0?isAdmin?'Play':'Waiting...':null}
                             {status===2?"Waiting for others...":null}
+                            {status===4?"Waiting for others...":null}
                         </span>
+                    </div>
+                    <div style={{display:status===3?"block":'none'}}>
+                        <div className={styles.psych} style={{textAlign:'left', fontSize:'2em'}}>VOTING</div>
+                        <div className={styles.votingBooth}>
+                            {votingBooth}
+                        </div>
+                        <div className={styles.submit}><button onClick={vote}>Vote</button></div>
+
                     </div>
                 </div>
                 <div className={styles.psych}>PSYCH</div>
@@ -131,4 +161,5 @@ export default Psych;
 //1->Game Started
 //2->I have Answered
 //3->Everybody Has Answered && Voting Booth;
-//4->Voting Complete && Show Result
+//4->I Voted
+//5->Voting Complete && Show Result

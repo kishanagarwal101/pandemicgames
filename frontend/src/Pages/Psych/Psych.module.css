@@ -214,6 +214,18 @@ background-image: -webkit-linear-gradient(45deg,
                       transparent 75%,
                       transparent)
 }
+.votingBooth{
+  height:50vh;
+  background-color: rgb(22, 39, 53);
+  overflow-y:scroll;
+  margin-top:5%;
+  margin-bottom:5%;
+  border-radius:1em;
+}
+.votingBooth::-webkit-scrollbar{
+  display:none;
+}
+
 
 @-webkit-keyframes fx-mask {
   0% {

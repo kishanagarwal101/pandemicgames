@@ -1,0 +1,12 @@
+.main{
+    width:90%;
+    color:rgb(255,171,74);
+    border:2px solid rgb(255,171,74);
+    padding:1em;
+    font-size:1.5em;
+    margin:auto;
+    margin-top:2.5%;
+}
+.main:hover{
+    background-color:rgba(255, 171, 74, 0.226);
+}
