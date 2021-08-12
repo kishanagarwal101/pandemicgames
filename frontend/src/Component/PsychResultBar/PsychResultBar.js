@@ -7,7 +7,7 @@ const nthFib = (n)=> {
 }
 
 const psychScore = (n)=>{
-    if(n==0)return 0;
+    if(n===0)return 0;
     let ans =  nthFib(n+2)*2;
     return ans;
 }
