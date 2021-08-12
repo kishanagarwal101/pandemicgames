@@ -225,7 +225,10 @@ background-image: -webkit-linear-gradient(45deg,
 .votingBooth::-webkit-scrollbar{
   display:none;
 }
-
+.resultLeaderboard{
+  height:50vh;
+  overflow-y:scroll;
+}
 
 @-webkit-keyframes fx-mask {
   0% {

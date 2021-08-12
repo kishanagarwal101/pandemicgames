@@ -5,6 +5,8 @@ import Chat from '../../Component/Chat/Chat';
 import styles from './Psych.module.css'; 
 import LeaderboardCard from './Leaderboard';
 import PsychVote from '../../Component/PsychVote/PsychVote';
+import PsychResultBar from '../../Component/PsychResultBar/PsychResultBar';
+
 const Psych = (props) => {
     const [username, setUsername] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
@@ -109,7 +111,7 @@ const Psych = (props) => {
     }
     const LeaderboardComponent = gameState.sort((a, b)=>b.points-a.points).map((m, i)=><LeaderboardCard position={i+1} name={m.username} points={m.points} prompt={m.prompt} key={i}/>)
     const votingBooth = gameState.map((m, i)=><PsychVote data={m} key={i} selectedVote={selectedVote} setSelectedVote={setSelectedVote} myUsername={username}/>)
-    console.log(gameState)
+    const Result = gameState.sort((a, b)=>b.points-a.points).map((m, i)=> <PsychResultBar vote={m.vote} prompt={m.prompt} username={m.username} />)
     return ( 
         <div className={styles.background}>
             <div className={styles.mainContainer}>
@@ -142,7 +144,10 @@ const Psych = (props) => {
                             {votingBooth}
                         </div>
                         <div className={styles.submit}><button onClick={vote}>Vote</button></div>
-
+                    </div>
+                    <div className={styles.resultLeaderboard} style={{display: status===5?'block':'none'}}>
+                        <h1 style={{fontFamily:'strikefighter', width:'80%', margin:'auto'}}>Results</h1>
+                        {Result}
                     </div>
                 </div>
                 <div className={styles.psych}>PSYCH</div>
