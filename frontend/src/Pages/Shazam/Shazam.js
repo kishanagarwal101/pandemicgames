@@ -24,13 +24,21 @@ const Shazam = (props) => {
     const [hasGuessed, setHasGuessed] = useState(false);
     const [numberOfCorrectGuesses, setNumberOfCorrectGuesses] = useState(0);
 
-    const scrollRef = useRef(null);
-    let countDown = useRef(null);
-    let startButton = useRef(null);
-    let audioElement = useRef(null)
-    let buttonGroup = useRef(null);
-    let listenPartyRef = useRef(null);
-    let timerBarRef = useRef(null);
+    const roundNumber = useRef(0);
+
+    var scrollRef = useRef(null);
+    var countDown = useRef(null);
+    var countDownInner = useRef(null);
+    var startButton = useRef(null);
+    var audioElement = useRef(null)
+    var buttonGroupRef = useRef(null);
+    var listenPartyRef = useRef(null);
+    var timerBarRef = useRef(null);
+    var betweenRound = useRef(null);
+    const tl2 = useRef(null);
+    const tl = useRef(null);
+    const gameOverRef = useRef(null);
+
     useEffect(() => {
         const socket = SocketIOClient("/");
         setSocket(socket);
@@ -56,7 +64,6 @@ const Shazam = (props) => {
                 setSongList(res.songList);
             })
     }, [props.location.state.roomID, props.location.state.isAdmin, props.location.state.username,]);
-
     useEffect(() => {
         if (socket) {
             socket.on('userJoinedShazam', ({ users, username }) => {
@@ -74,33 +81,62 @@ const Shazam = (props) => {
         if (socket) {
             socket.on('ShazamStart', (number) => {
                 if (songList[number]) {
+                    roundNumber.current++;
+                    console.log(roundNumber);
+                    tl2.current = gsap.timeline({ paused: true });
+                    tl.current = gsap.timeline({ paused: true });
+                    betweenRound.current.style.visibility = 'hidden';
+                    buttonGroupRef.current.style.visibility = 'hidden';
                     setSongUrl(songList[number].media_url);
                     setSongName(songList[number].album);
                     startButton.current.style.display = 'none';
                     countDownFunction();
                     setTimeout(() => {
-                        var tl2 = gsap.timeline({ paused: true });
-                        tl2.to(buttonGroup, { visibility: 'hidden', display: 'none', duration: 0.5 })
+                        tl2.current.to(document.getElementById('buttonContainer'), { visibility: 'hidden', display: 'none', duration: 0.1 })
+                        tl2.current.to(document.getElementById('timerBar'), {
+                            width: '100%', duration: 0.1, ease: "none"
+                        })
+                        tl2.current.play();
                         countDown.current.style.visibility = 'hidden';
+                        betweenRound.current.style.visibility = 'hidden';
                         play();
-                    }, 3100)
+                    }, 3000)
                     setTimeout(() => {
                         audioElement.current.pause();
-                        audioElement.current.currentTime = 0;
+                        betweenRound.current.style.visibility = 'visible';
                         if (isAdmin) {
-                            var tl = gsap.timeline({ paused: true });
-                            tl.to(buttonGroup, { visibility: 'visible', display: 'flex', duration: 0.5 })
-                            tl.to(timerBarRef, { width: 0, duration: 5 })
-                            tl.play();
+                            listenPartyRef.current.style.visibility = 'visible';
+                            listenPartyRef.current.style.display = 'flex';
+                            tl.current.to(document.getElementById('buttonContainer'), { visibility: 'visible', display: 'flex', duration: 0.5 })
+                            tl.current.fromTo(document.getElementById('timerBar'), { width: '100%' }, {
+                                width: 0, duration: 7, ease: "none", onComplete: function () {
+                                    if (roundNumber.current === 5) {
+                                        console.log('hey there')
+                                        socket.emit('ShazamOver')
+                                    }
+                                    else
+                                        socket.emit('ShazamStart', songList.length)
+                                }
+                            })
+                            tl.current.play();
                         }
-                    }, 13000);
+                    }, 15000);
                 }
             })
-            socket.on('ShazamNextRound', (number) => {
+            socket.on('ShazamSongParty', () => {
+                const audio = audioElement.current;
+                audio.volume = 0.1;
+                audio.play()
+            })
+            socket.on('ShazamOver', () => {
+                betweenRound.current.style.visibility = 'visible';
+            })
+            socket.on('shazamReset', () => {
 
             })
         }
-    }, [socket, songList])
+
+    }, [isAdmin, socket, songList])
     useEffect(() => {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }, [messages.length])
@@ -113,13 +149,12 @@ const Shazam = (props) => {
     }
     const sendChatMessage = async () => {
         if (!text) return;
-        console.log(songName);
         if (Equality(songName, text)) {
             setHasGuessed(true);
             socket.emit('ShazamChatMessage', { username: username, message: text, guess: true, afterGuess: false, userCorrectGuess: true })
             setSongName('');
             const score = 100 - (numberOfCorrectGuesses * 10);
-            console.log(score, 'SCORE');
+
             POST(`/updateShazamScore/${props.location.state.roomID}`, { score: score, username: username })
                 .then(res => {
                     console.log(res);
@@ -138,7 +173,7 @@ const Shazam = (props) => {
     const countDownFunction = () => {
 
         let countDownDiv = countDown.current;
-        countDownDiv.textContent = 3;
+        countDownInner.current.textContent = 3;
         countDownDiv.style.visibility = 'visible';
         let i = 2;
         var countdownInterval = setInterval(() => {
@@ -146,7 +181,7 @@ const Shazam = (props) => {
                 countDown.current.style.visibility = 'hidden';
                 clearInterval(countdownInterval);
             }
-            countDownDiv.textContent = i--;
+            countDownInner.current.textContent = i--;
         }, 1000);
     }
     const userList = users.map((m, i) => <UserListShazam user={users[i]} key={i} index={i + 1} />)
@@ -157,15 +192,54 @@ const Shazam = (props) => {
     }
     const play = () => {
         const audio = audioElement.current;
-        console.log(audio, "AUDIO");
+        audioElement.current.currentTime = 0;
         audio.volume = 0.1;
         audio.play()
     }
-    console.log(numberOfCorrectGuesses);
     return (
         <div className={styles.mainDiv} >
             <div className={styles.countDown} ref={countDown}>
-                3
+                <div >ROUND {roundNumber.current}</div>
+                <div ref={countDownInner}>3</div>
+            </div>
+            <div className={styles.playerListBetweenRounds} ref={betweenRound}>
+                <div className={styles.playerList2}>
+                    {userList}
+                </div>
+                <div style={{ display: 'flex' }} className={styles.buttonContainer}
+                    ref={buttonGroupRef} id='buttonContainer'>
+                    <div className={styles.musicPartyButton}
+                        onClick={() => {
+
+                            tl.current.pause();
+                            listenPartyRef.current.style.visibility = 'hidden';
+                            listenPartyRef.current.style.display = 'none';
+                            socket.emit('ShazamSongParty')
+                        }} ref={listenPartyRef}>
+                        Have a music party!
+                        <div className={styles.timerBar}
+                            ref={timerBarRef} id='timerBar'>
+                        </div>
+                    </div>
+                    <div className={styles.nextRoundButton} onClick={() => {
+                        if (tl.current)
+                            tl.current.pause();
+                        listenPartyRef.current.style.visibility = 'hidden';
+                        listenPartyRef.current.style.display = 'none';
+                        betweenRound.current.style.visibility = 'hidden';
+                        buttonGroupRef.current.style.visibility = 'hidden';
+                        socket.emit('ShazamStart', songList.length)
+                    }}> Next round??</div>
+                </div>
+            </div>
+            <div className={styles.gameOverDiv} ref={gameOverRef}>
+                <div className={styles.playerList2}>
+                    {userList}
+                </div>
+                <div className={styles.gameOverButtonContainer}>
+                    <div className={styles.anotherGameButton} onClick={() => socket.emit('shazamReset')}>Another Game?</div>
+                    <div className={styles.goToLobby}>Go to lobby.</div>
+                </div>
             </div>
             <div className={styles.gamearea}>
                 <div className={styles.userArea}>
@@ -176,22 +250,15 @@ const Shazam = (props) => {
                         {userList}
                     </div>
                 </div>
-                <div className={styles.musicArea}>
-                    <audio ref={audioElement} src={songUrl}>
-                    </audio>
-                    <div style={{ display: isAdmin ? 'none' : 'none' }} className={styles.startButton} onClick={startGame} ref={startButton}> START</div>
 
-                    <div style={{ display: 'flex' }} className={styles.buttonContainer} ref={(e) => buttonGroup = e}>
-                        <div className={styles.musicPartyButton} onClick={''} ref={listenPartyRef}>
-                            Have a music party!
-                            <div style={{ width: '100%' }} className={styles.timerBar}
-                                ref={(e) => timerBarRef = e}>
-                            </div>
-                        </div>
-                        <div className={styles.nextRoundButton} onClick={() => socket.emit('ShazamStart', songList.length)}> Next round??</div>
-                    </div>
+                <div className={styles.musicArea}>
+                    <audio className={styles.audioElementClass} ref={audioElement} src={songUrl}>
+                    </audio>
+                    <div style={{ display: isAdmin ? 'flex' : 'none' }} className={styles.startButton} onClick={startGame} ref={startButton}> START</div>
+
 
                 </div>
+
                 <div className={styles.chatArea}>
                     <div className={styles.messageArea} ref={scrollRef}>
                         {messageBlock}

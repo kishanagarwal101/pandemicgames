@@ -85,7 +85,10 @@ io.on('connection', (socket) => {
             console.log(number);
             io.in(roomID).emit('ShazamStart', number)
         });
-    })
+        socket.on('ShazamSongParty', () => io.in(roomID).emit('ShazamSongParty'))
+        socket.on('ShazamOver', () => io.in(roomID).emit('ShazamOver'))
+        socket.on('shazamReset', () => io.in(roomID).emit('shazamReset')))
+})
 });
 
 app.get('/test', (req, res) => {
