@@ -25,7 +25,7 @@ const Wxyz = (props) => {
   let myPosition = useRef(null);
   const circle = useRef(null);
   const startButton = useRef(null);
-
+  const userArr = useRef([]);
   useEffect(() => {
     const socket = SocketIOClient("/");
     setSocket(socket);
@@ -40,6 +40,7 @@ const Wxyz = (props) => {
     POST(`/joinWXYZ/${props.location.state.roomID}`, payload).then((res) => {
       setRoom(res.room);
       setUsers(res.room.users);
+      userArr.current = res.room.users;
       res.room.users.forEach((user, i) => {
         if (user.username === props.location.state.username) {
           myPosition.current = i;
@@ -73,6 +74,7 @@ const Wxyz = (props) => {
           { username: "SYSTEM", message: `${username} Joined!` },
         ]);
         setUsers(users);
+        userArr.current = users;
       });
 
       socket.on("chatMessage", (payload) =>
@@ -86,29 +88,24 @@ const Wxyz = (props) => {
       //   setRedirect(true)
       // });
     }
-  }, [socket, username]);
+  }, [props.location.state.username, socket, username]);
 
   useEffect(() => {
-    if (socket && users.length) {
+    if (socket && userArr.current) {
       socket.on("WXYZTurn", (res) => {
+        console.log(userArr);
         console.log(res.position, myPosition.current, "dono");
-        console.log((180 + res.position * (360 / users.length)) % 360);
         setTimeout(() => {
-          setDegree((180 + res.position * (360 / users.length)) % 360);
-        }, 3000);
-        if (res.position === myPosition.current) {
-          setMyTurn(true);
-          setTimeout(() => {
-            console.log("hello" + ((res.position + 1) % users.length));
+          setDegree((180 + res.position * (360 / userArr.current.length)) % 360);
+          if (res.position === myPosition.current) {
             setMyTurn(false);
-            socket.emit("WXYZTurn", (res.position + 1) % users.length);
-          }, 3000);
-        }
+            socket.emit("WXYZTurn", (res.position + 1) % userArr.current.length);
+          }
+        }, 3000);
       });
     }
-  }, [socket, users]);
+  }, [socket]);
 
-  console.log(degree + "degree");
 
   useEffect(() => {
     setHeightCircle(circle.current.offsetWidth);
