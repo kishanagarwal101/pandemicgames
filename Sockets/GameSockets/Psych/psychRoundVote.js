@@ -1,6 +1,5 @@
 const psychRoundStart = require("./psychRoundStart") ;
 const psychModel = require('../../../Models/psychModel');
-const roomModel = require("../../../Models/roomModel");
 const psychScore = require('../../../Utils/psychScore');
 const psychRoundVote = async (io, payload, roomID)=>{
     let updatedGameState = payload.gameState;
@@ -12,6 +11,8 @@ const psychRoundVote = async (io, payload, roomID)=>{
             i.vote.push(payload.voter);
         }
     });
+    await psychModel.findOneAndUpdate({roomID}, {users:updatedGameState});
+    console.log(updatedGameState)
     let unvoted = 0;
     updatedGameState.forEach((i)=>{
         if(!i.hasVoted)unvoted++;
@@ -20,7 +21,6 @@ const psychRoundVote = async (io, payload, roomID)=>{
         io.in(roomID).emit('psychRoundVote', {gameState:updatedGameState});
         //Update Scores
         let oldUserState = updatedGameState;
-        console.log(oldUserState);
         oldUserState.forEach((i)=>{
             i.points += psychScore(i.vote.length);
             i.vote = [];

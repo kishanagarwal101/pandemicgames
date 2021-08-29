@@ -88,7 +88,18 @@ const Psych = (props) => {
             socket.on('chatMessage', (payload) => setMessages(prev => [...prev, payload]));
 
     }, [socket]);
-
+    useEffect(()=>{
+        if(socket){
+            socket.on('userLeftPsychRoom', payload=>{
+                setGameState(payload.newGameState);
+            })
+            socket.on('changeAdmin', ({adminUsername})=>{
+                if(username === adminUsername){
+                    setIsAdmin(true);
+                }
+            })
+        }
+    }, [socket, username])
     const sendResponse = ()=>{
         if(!value)return;
         socket.emit('roundGuess', {
