@@ -57,4 +57,26 @@ router.post('/updateShazamScore/:roomID', (req, res) => {
         }
     })
 })
+router.get('/leaveShazam/:roomID', async (req, res) => {
+    try {
+        let roomID = req.params.roomID;
+        console.log(roomID)
+        const currentShazam = await shazamModel.findOne({ roomID: roomID });
+        const newRoom = new roomModel(
+            {
+                roomID: roomID,
+                users: [],
+                adminUsername: currentShazam.adminUsername,
+                roomName: currentShazam.roomName,
+                selectedGame: -1
+            }
+        );
+        await newRoom.save();
+        await shazamModel.deleteOne({ roomID: roomID });
+        return res.json({ code: 200, errCode: null, message: 'Shazam redirecting!' });
+    } catch (err) {
+        console.error(err);
+        return res.json({ code: 500, errCode: 500, message: 'Internal Server Error!' });
+    }
+});
 module.exports = router;

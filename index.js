@@ -14,6 +14,9 @@ const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
 const handleTTTMove = require('./Sockets/GameSockets/TTT/handleTTTMove');
 const disconnectTTT = require('./Sockets/GameSockets/TTT/disconnectTTT');
 const axios = require('axios').default;
+const shazamModel = require('./Models/shazamModel');
+
+
 //DB Connection
 mongoose.connect(process.env.DBURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }, () => {
     console.log("Connected to Pandemic DB!")
@@ -87,8 +90,37 @@ io.on('connection', (socket) => {
         });
         socket.on('ShazamSongParty', () => io.in(roomID).emit('ShazamSongParty'))
         socket.on('ShazamOver', () => io.in(roomID).emit('ShazamOver'))
-        socket.on('shazamReset', () => io.in(roomID).emit('shazamReset')))
-})
+        socket.on('shazamReset', () => io.in(roomID).emit('shazamReset'))
+
+        ///leaveRoom
+        socket.on('disconnect', () => {
+            const room = await shazamModel.findOne({ roomID })
+            if (room) {
+                if (room.adminUsername === username) {
+                    const newAdmin = room.users[0].username === username ? room.users[1].username : room.users[0].username;
+                    shazamModel.updateOne({ roomID }, { romm.adminUsername: newAdmin })
+                }
+                else {
+                    await ticTacToeModel.deleteOne({ roomID: roomID });
+                    const payload = {
+                        roomID: roomID,
+                        users: [],
+                        roomName: room.roomName,
+                        adminUsername: username,
+                        selectedGame: -1
+                    }
+                    const newLobby = new roomModel(payload);
+                    await newLobby.save();
+                    socket.to(roomID).emit('returnToRoomFromTTT', { admin: true });
+                }
+            }
+            console.log(`${username} left the lobby!`)
+        })
+
+        socket.on('returnToRoomFromleaveShazam', () => io.in(roomID).emit('returnToRoomFromleaveShazam'))
+
+
+    })
 });
 
 app.get('/test', (req, res) => {

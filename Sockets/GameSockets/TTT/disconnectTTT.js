@@ -31,11 +31,6 @@ const disconnectTTT = async (username, roomID, socket) => {
             socket.to(roomID).emit('returnToRoomFromTTT', { admin: true });
         }
     }
-
-
-
-
-
     console.log(`${username} left the lobby!`)
 
 }

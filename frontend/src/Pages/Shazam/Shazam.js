@@ -7,6 +7,7 @@ import GET from '../../Requests/GET';
 import axios from 'axios';
 import SendIcon from '@material-ui/icons/Send';
 import ShazamChat from '../../Component/ShazamChat/ShazamChat';
+import { Redirect } from 'react-router-dom';
 import gsap from 'gsap';
 
 const Shazam = (props) => {
@@ -23,7 +24,7 @@ const Shazam = (props) => {
     const [text, setText] = useState('');
     const [hasGuessed, setHasGuessed] = useState(false);
     const [numberOfCorrectGuesses, setNumberOfCorrectGuesses] = useState(0);
-
+    const [redirect, setRedirect] = useState(false);
     const roundNumber = useRef(0);
 
     var scrollRef = useRef(null);
@@ -107,18 +108,19 @@ const Shazam = (props) => {
                         if (isAdmin) {
                             listenPartyRef.current.style.visibility = 'visible';
                             listenPartyRef.current.style.display = 'flex';
-                            tl.current.to(document.getElementById('buttonContainer'), { visibility: 'visible', display: 'flex', duration: 0.5 })
-                            tl.current.fromTo(document.getElementById('timerBar'), { width: '100%' }, {
-                                width: 0, duration: 7, ease: "none", onComplete: function () {
-                                    if (roundNumber.current === 5) {
-                                        console.log('hey there')
-                                        socket.emit('ShazamOver')
-                                    }
-                                    else
+                            if (roundNumber.current === 5) {
+                                console.log('hey there')
+                                socket.emit('ShazamOver')
+                            }
+                            else {
+                                tl.current.to(document.getElementById('buttonContainer'), { visibility: 'visible', display: 'flex', duration: 0.5 })
+                                tl.current.fromTo(document.getElementById('timerBar'), { width: '100%' }, {
+                                    width: 0, duration: 7, ease: "none", onComplete: function () {
                                         socket.emit('ShazamStart', songList.length)
-                                }
-                            })
-                            tl.current.play();
+                                    }
+                                })
+                                tl.current.play();
+                            }
                         }
                     }, 15000);
                 }
@@ -129,11 +131,13 @@ const Shazam = (props) => {
                 audio.play()
             })
             socket.on('ShazamOver', () => {
-                betweenRound.current.style.visibility = 'visible';
+                gameOverRef.current.style.visibility = 'visible';
             })
-            socket.on('shazamReset', () => {
+            socket.on('returnToRoomFromleaveShazam', () => {
+                setRedirect(true);
 
             })
+            // return (socket.disconnect())
         }
 
     }, [isAdmin, socket, songList])
@@ -196,6 +200,23 @@ const Shazam = (props) => {
         audio.volume = 0.1;
         audio.play()
     }
+    const leaveShazam = () => {
+        GET(`/leaveShazam/${props.location.state.roomID}`)
+            .then(res => {
+                console.log(res);
+                if (res.code === 200) {
+                    socket.emit('returnToRoomFromleaveShazam');
+                }
+            })
+    }
+    if (redirect) {
+        return <Redirect
+            to={{
+                pathname: "/lobby",
+                state: { roomID: props.location.state.roomID, username: props.location.state.username, isAdmin: isAdmin }
+            }}
+        />
+    }
     return (
         <div className={styles.mainDiv} >
             <div className={styles.countDown} ref={countDown}>
@@ -237,8 +258,7 @@ const Shazam = (props) => {
                     {userList}
                 </div>
                 <div className={styles.gameOverButtonContainer}>
-                    <div className={styles.anotherGameButton} onClick={() => socket.emit('shazamReset')}>Another Game?</div>
-                    <div className={styles.goToLobby}>Go to lobby.</div>
+                    <div className={styles.goToLobby} onClick={leaveShazam}>Go to lobby.</div>
                 </div>
             </div>
             <div className={styles.gamearea}>
