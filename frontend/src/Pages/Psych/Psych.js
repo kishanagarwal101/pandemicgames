@@ -6,8 +6,9 @@ import styles from './Psych.module.css';
 import LeaderboardCard from './Leaderboard';
 import PsychVote from '../../Component/PsychVote/PsychVote';
 import PsychResultBar from '../../Component/PsychResultBar/PsychResultBar';
-
+import {Redirect} from 'react-router-dom';
 const Psych = (props) => {
+    const [redirect, setRedirect] = useState(false);
     const [username, setUsername] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
     const [roomID, setRoomID] = useState('');
@@ -45,7 +46,15 @@ const Psych = (props) => {
             });
 
     }, [props.location.state.roomID, props.location.state.isAdmin, props.location.state.username]);
-
+    useEffect(()=>{
+        if(socket){
+            socket.on('gameInitialized', ()=>{
+                if(isAdmin){
+                    socket.emit('roundStart');
+                }
+            });
+        }
+    }, [isAdmin, socket])
     useEffect(()=>{
         if(socket){
             socket.on('userJoinedPsych', (payload) => {
@@ -53,11 +62,7 @@ const Psych = (props) => {
                 setUsers(payload.users);
                 setGameState(payload.users);
             });
-            socket.on('gameInitialized', ()=>{
-                if(isAdmin){
-                    socket.emit('roundStart');
-                }
-            });
+            
             socket.on('roundStart', (payload)=>{
                 let initGameState = payload.users;
                 initGameState.forEach((m)=> m.prompt = null);
@@ -99,7 +104,16 @@ const Psych = (props) => {
                 }
             })
         }
-    }, [socket, username])
+    }, [socket, username]);
+
+    useEffect(()=>{
+        if(socket){
+            socket.on('returnToLobbyFromPsych', ()=>{
+                socket.disconnect();
+                setRedirect(true);
+            })
+        }
+    }, [socket]);
     const sendResponse = ()=>{
         if(!value)return;
         socket.emit('roundGuess', {
@@ -123,6 +137,14 @@ const Psych = (props) => {
     const LeaderboardComponent = gameState.sort((a, b)=>b.points-a.points).map((m, i)=><LeaderboardCard position={i+1} name={m.username} points={m.points} prompt={m.prompt} key={i}/>)
     const votingBooth = gameState.map((m, i)=><PsychVote data={m} key={i} selectedVote={selectedVote} setSelectedVote={setSelectedVote} myUsername={username}/>)
     const Result = gameState.sort((a, b)=>b.points-a.points).map((m, i)=> <PsychResultBar vote={m.vote} prompt={m.prompt} username={m.username} />)
+    if (redirect) {
+        return <Redirect
+            to={{
+                pathname: `/lobby`,
+                state: { roomID: roomID, username: username, isAdmin: isAdmin }
+            }}
+        />
+    }
     return ( 
         <div className={styles.background}>
             <div className={styles.mainContainer}>

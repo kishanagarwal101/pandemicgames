@@ -14,6 +14,7 @@ const psychSchema = mongoose.Schema({
     users: { type: [userSchema] },
     roomName: { type: String, required: true },
     adminUsername: { type: String },
+    gameCount: {type: Number}
 
 });
 

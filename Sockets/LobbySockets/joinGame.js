@@ -21,6 +21,7 @@ const joinGame = async (io, gameCode, roomID, room) => {
             users: [],
             roomName: room.roomName,
             adminUsername: room.adminUsername,
+            gameCount : 0
         });
         await newPsychmodel.save();
         io.in(roomID).emit('psychStart');
