@@ -63,7 +63,10 @@ const TicTacToe = (props) => {
             });
 
             socket.on('chatMessage', (payload) => setMessages(prev => [...prev, payload]));
-
+        }
+    }, [socket]);
+    useEffect(() => {
+        if (socket) {
             socket.on('TTTMove', ({ gameState, incomingWeightArray }) => {
                 setIsMyTurn(true);
                 setGameState(gameState);
