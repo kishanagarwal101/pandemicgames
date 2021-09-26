@@ -8,6 +8,7 @@ const roomModel = require('./Models/roomModel');
 const roomRoutes = require('./Routes/roomRoutes');
 const tictactoeRoutes = require('./Routes/tictactoeRoutes');
 const psychRoutes = require('./Routes/psychRoutes')
+const shazamRoutes = require('./Routes/shazamRoutes');
 const path = require('path');
 const joinGame = require('./Sockets/LobbySockets/joinGame');
 const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
@@ -17,6 +18,12 @@ const psychRoundStart = require('./Sockets/GameSockets/Psych/psychRoundStart');
 const psychRoundGuess = require('./Sockets/GameSockets/Psych/psychRoundGuess');
 const psychRoundVote = require('./Sockets/GameSockets/Psych/psychRoundVote');
 const handleDisconnect = require('./Sockets/GameSockets/Psych/handleDisconnect');
+const disconnectShazam = require('./Sockets/GameSockets/shazam/disconnectShazam')
+
+const axios = require('axios').default;
+const shazamModel = require('./Models/shazamModel');
+
+
 //DB Connection
 mongoose.connect(process.env.DBURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }, () => {
     console.log("Connected to Pandemic DB!")
@@ -36,7 +43,6 @@ app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
-
     next();
 });
 
@@ -94,13 +100,36 @@ io.on('connection', (socket) => {
             handleDisconnect(io, socket, roomID, username);
         })
     });
+    socket.on('userJoinedShazam', ({ users, roomID, username }) => {
+        socket.join(roomID);
+        console.log(`${socket.id} Joined Shazam`);
+        socket.to(roomID).emit('userJoinedShazam', { users, username });
+        socket.on('ShazamChatMessage', (payload) => {
+            io.in(roomID).emit('ShazamChatMessage', payload)
+        });
+        socket.on('ShazamChatMessageAfterGuess', (payload) => {
+            io.in(roomID).emit('ShazamChatMessageAfterGuess', payload)
+        });
+        socket.on('ShazamStart', (songListLength) => {
+            let number = Math.floor(Math.random() * (songListLength));
+            console.log(number);
+            io.in(roomID).emit('ShazamStart', number)
+        });
+        socket.on('ShazamSongParty', () => io.in(roomID).emit('ShazamSongParty'))
+        socket.on('ShazamOver', () => io.in(roomID).emit('ShazamOver'))
+        socket.on('shazamReset', () => io.in(roomID).emit('shazamReset'))
+
+        ///leaveRoom
+        socket.on('returnToRoomFromleaveShazam',
+            () => io.in(roomID).emit('returnToRoomFromleaveShazam'));
+        socket.on('disconnect', () => {
+            console.log(username)
+            disconnectShazam(username, roomID, socket, io);
+        })
+    })
+
 });
 
-//@ Reponse Object JSON Format
-//@ Every Object must have:
-//@ {code:Number, errCode: Number || null, message:String}
-//@ Additional Params: any || null
-//Test Route
 app.get('/test', (req, res) => {
     res.json({
         code: 200,
@@ -112,6 +141,7 @@ app.use('/', roomRoutes);
 app.use('/', tictactoeRoutes);
 app.use('/', psychRoutes);
 
+app.use('/', shazamRoutes);
 app.use(express.static(path.join(__dirname, 'frontend', 'build')));
 
 app.get('*', (req, res) => {

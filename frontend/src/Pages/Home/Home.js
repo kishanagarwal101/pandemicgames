@@ -5,7 +5,7 @@ import POST from './../../Requests/POST';
 import { toast } from 'react-toastify'
 import GET from './../../Requests/GET';
 import { Redirect } from 'react-router-dom';
-
+import axios from 'axios';
 const Home = () => {
     const [jUsername, setJUsername] = useState('');
     const [jRoomID, setJRoomID] = useState('');
@@ -38,7 +38,6 @@ const Home = () => {
 
         }
     }, [join]);
-
     const attemptJoin = async () => {
         if (!jUsername) return toast('Username Cannot Be Empty!');
         if (jRoomID.length !== 6) return toast('Invalid Room!');

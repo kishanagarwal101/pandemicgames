@@ -5,6 +5,7 @@ import Home from './Pages/Home/Home';
 import Lobby from './Pages/Lobby/Lobby';
 import TicTacToe from './Pages/TicTacToe/TicTacToe';
 import Psych from './Pages/Psych/Psych';
+import Shazam from './Pages/Shazam/Shazam'
 function App() {
   return (
     <div className="App">
@@ -15,6 +16,7 @@ function App() {
           <Route path="/lobby" render={(props) => <Lobby {...props} />} />
           <Route path="/tictactoe" render={(props) => <TicTacToe {...props} />} />
           <Route path="/psych" render={(props)=><Psych {...props}/>} />
+          <Route path="/shazam" render={(props) => <Shazam {...props} />} />
         </Switch>
       </Router>
     </div>
