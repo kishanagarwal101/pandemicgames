@@ -133,14 +133,30 @@ const Shazam = (props) => {
             socket.on('ShazamOver', () => {
                 gameOverRef.current.style.visibility = 'visible';
             })
-            socket.on('returnToRoomFromleaveShazam', () => {
-                setRedirect(true);
 
-            })
             // return (socket.disconnect())
         }
 
     }, [isAdmin, socket, songList])
+    useEffect(() => {
+        if (socket)
+            socket.on('returnToRoomFromleaveShazam', () => {
+                socket.disconnect();
+                setRedirect(true);
+            })
+    }, [socket])
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('changeShazamAdmin', ({ adminUsername }) => {
+                console.log(adminUsername)
+                if (username === adminUsername) {
+                    setIsAdmin(true);
+                }
+            })
+        }
+    }, [socket, username]);
+
     useEffect(() => {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }, [messages.length])
@@ -200,6 +216,7 @@ const Shazam = (props) => {
         audio.volume = 0.1;
         audio.play()
     }
+    ////REDIRECT
     const leaveShazam = () => {
         GET(`/leaveShazam/${props.location.state.roomID}`)
             .then(res => {
@@ -209,6 +226,7 @@ const Shazam = (props) => {
                 }
             })
     }
+
     if (redirect) {
         return <Redirect
             to={{

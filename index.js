@@ -13,6 +13,8 @@ const joinGame = require('./Sockets/LobbySockets/joinGame');
 const leaveRoom = require('./Sockets/LobbySockets/leaveRoom');
 const handleTTTMove = require('./Sockets/GameSockets/TTT/handleTTTMove');
 const disconnectTTT = require('./Sockets/GameSockets/TTT/disconnectTTT');
+const disconnectShazam = require('./Sockets/GameSockets/shazam/disconnectShazam')
+
 const axios = require('axios').default;
 const shazamModel = require('./Models/shazamModel');
 
@@ -93,34 +95,14 @@ io.on('connection', (socket) => {
         socket.on('shazamReset', () => io.in(roomID).emit('shazamReset'))
 
         ///leaveRoom
+        socket.on('returnToRoomFromleaveShazam',
+            () => io.in(roomID).emit('returnToRoomFromleaveShazam'));
         socket.on('disconnect', () => {
-            const room = await shazamModel.findOne({ roomID })
-            if (room) {
-                if (room.adminUsername === username) {
-                    const newAdmin = room.users[0].username === username ? room.users[1].username : room.users[0].username;
-                    shazamModel.updateOne({ roomID }, { romm.adminUsername: newAdmin })
-                }
-                else {
-                    await ticTacToeModel.deleteOne({ roomID: roomID });
-                    const payload = {
-                        roomID: roomID,
-                        users: [],
-                        roomName: room.roomName,
-                        adminUsername: username,
-                        selectedGame: -1
-                    }
-                    const newLobby = new roomModel(payload);
-                    await newLobby.save();
-                    socket.to(roomID).emit('returnToRoomFromTTT', { admin: true });
-                }
-            }
-            console.log(`${username} left the lobby!`)
+            console.log(username)
+            disconnectShazam(username, roomID, socket, io);
         })
-
-        socket.on('returnToRoomFromleaveShazam', () => io.in(roomID).emit('returnToRoomFromleaveShazam'))
-
-
     })
+
 });
 
 app.get('/test', (req, res) => {
