@@ -2,7 +2,7 @@ const gameArray = [
     {
         name: 'WXYZ',
         gameCode: 0,
-        limit: null
+        limit: 10
     },
     {
         name: 'Shazam',

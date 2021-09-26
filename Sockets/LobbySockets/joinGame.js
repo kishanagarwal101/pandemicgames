@@ -1,7 +1,19 @@
 const ticTacToeModel = require('../../Models/tictactoeModel');
 const shazamModel = require('../../Models/shazamModel');
 const psychModel = require('../../Models/psychModel');
+const wxyzModel = require('../../Models/wxyzModel');
+
 const joinGame = async (io, gameCode, roomID, room) => {
+    if (gameCode === 0) {
+        const newWxyz = new wxyzModel({
+            roomID: roomID,
+            users: [],
+            adminUsername: room.adminUsername,
+            roomName: room.roomName,
+        });
+        await newWxyz.save();
+        io.in(roomID).emit('WXYZStart');
+    }
     if (gameCode === 1) {
         const newShazamModel = new shazamModel({
             roomID: roomID,
@@ -15,13 +27,13 @@ const joinGame = async (io, gameCode, roomID, room) => {
         io.in(roomID).emit('ShazamStart');
     }
 
-    if(gameCode === 2){
+    if (gameCode === 2) {
         const newPsychmodel = new psychModel({
             roomID: roomID,
             users: [],
             roomName: room.roomName,
             adminUsername: room.adminUsername,
-            gameCount : 0
+            gameCount: 0
         });
         await newPsychmodel.save();
         io.in(roomID).emit('psychStart');
