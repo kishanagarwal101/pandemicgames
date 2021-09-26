@@ -14,6 +14,7 @@ const leaveRoom = require("./Sockets/LobbySockets/leaveRoom");
 const handleTTTMove = require("./Sockets/GameSockets/TTT/handleTTTMove");
 const disconnectTTT = require("./Sockets/GameSockets/TTT/disconnectTTT");
 const disconnectWXYZ = require("./Sockets/GameSockets/WXYZ/disconnectWXYZ");
+
 //DB Connection
 mongoose.connect(
   process.env.DBURI,
@@ -114,6 +115,27 @@ io.on("connection", (socket) => {
     );
     socket.on("WXYZTurn", (res) => {
       io.in(roomID).emit("WXYZTurn", { position: res });
+    });
+    socket.on("WXYZstr", (res) => {
+      io.in(roomID).emit("WXYZstr", { str: res });
+    });
+    socket.on("WXYZReduceLives", (res) => {
+      io.in(roomID).emit("WXYZReduceLives", { pos: res });
+    });
+    socket.on("WXYZcorrectAnswerRotate", (res) => {
+      io.in(roomID).emit("WXYZcorrectAnswerRotate", { liveChecker: res });
+    });
+    socket.on("WXYZwrongAnswerRotate", (res) => {
+      io.in(roomID).emit("WXYZcorrectAnswerRotate", { liveChecker: res });
+    });
+    socket.on("WXYZwinner", (res) => {
+      io.in(roomID).emit("WXYZwinner", { winner: res });
+    });
+    socket.on("returnToRoomFromleaveWXYZ", () =>
+      io.in(roomID).emit("returnToRoomFromleaveWXYZ")
+    );
+    socket.on("disconnect", () => {
+      disconnectWXYZ(username, roomID, socket, io);
     });
   });
 });

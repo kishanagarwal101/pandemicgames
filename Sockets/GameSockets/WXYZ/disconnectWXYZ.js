@@ -1,37 +1,33 @@
 const wxyzModel = require("../../../Models/wxyzModel");
-const roomModel = require("../../../Models/roomModel");
-const disconnectWXYZ = async (username, roomID, socket) => {
-    const room = await wxyzModel.findOne({ roomID })
-    if (room) {
-        if (room.adminUsername === username) {
-            const newAdmin = room.users[0].username === username ? room.users[1].username : room.users[0].username;
-            await wxyzModel.deleteOne({ roomID: roomID });
-            const payload = {
-                roomID: roomID,
-                users: [],
-                roomName: room.roomName,
-                adminUsername: newAdmin,
-                selectedGame: -1
-            }
-            const newLobby = new roomModel(payload);
-            await newLobby.save();
-            socket.to(roomID).emit('returnToRoomFromWXYZ', { admin: true });
-        }
-        else {
-            await wxyzModel.deleteOne({ roomID: roomID });
-            const payload = {
-                roomID: roomID,
-                users: [],
-                roomName: room.roomName,
-                adminUsername: username,
-                selectedGame: -1
-            }
-            const newLobby = new roomModel(payload);
-            await newLobby.save();
-            socket.to(roomID).emit('returnToRoomFromWXYZ', { admin: true });
-        }
+const disconnectWxyz = async (username, roomID, socket, io) => {
+  const room = await wxyzModel.findOne({ roomID });
+  if (room) {
+    const newUserList = room.users.filter((user) => user.username !== username);
+    let hasAdmin = false;
+    newUserList.forEach((user) => {
+      if (user.isAdmin) {
+        hasAdmin = true;
+      }
+    });
+    //Make New Admin
+    if (!hasAdmin) {
+      newUserList[0].isAdmin = true;
+      io.in(roomID).emit("changeWxyzAdmin", {
+        adminUsername: newUserList[0].username,
+        leftUsername: username,
+      });
+      await wxyzModel.findOneAndUpdate(
+        { roomID },
+        { users: newUserList, adminUsername: newUserList[0].username }
+      );
+    } else {
+      console.log(roomID);
+      io.in(roomID).emit("changeWxyzAdmin", {
+        adminUsername: username,
+        leftUsername: username,
+      });
+      await wxyzModel.findOneAndUpdate({ roomID }, { users: newUserList });
     }
-    console.log(`${username} left the lobby!`)
-
-}
-module.exports = disconnectWXYZ;
+  }
+};
+module.exports = disconnectWxyz;

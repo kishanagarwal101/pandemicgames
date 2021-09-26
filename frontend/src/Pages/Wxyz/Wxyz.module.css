@@ -1,4 +1,4 @@
-.mainwxyz{
+.mainwxyz {
   position: absolute;
   top: 0;
   left: 0;
@@ -8,19 +8,115 @@
   overflow: hidden;
 }
 
-.circle{
-  flex:1;
-  width:100%;
-  height:70%;
-  margin:22%;
+.circle {
+  flex: 2;
+  width: 100%;
+  height: 70%;
+  margin: 22%;
   border-radius: 100%;
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 149, 0, 0.7),
+    rgb(241, 120, 64),
+    rgba(255, 149, 0, 0.7)
+  );
 }
 
-.gameArea{
-  width:75%;
-  background-image:linear-gradient(180deg,rgba(255, 149, 0, 0.7),rgb(241, 120, 64),rgba(255, 149, 0, 0.7));
-  display:flex;
-  justify-content:center;
+.answerArea {
+  flex: 1;
+}
+
+.string {
+  position: absolute;
+  transform: translate(120%, 120%);
+  width: 60px;
+  border-radius: 100%;
+  color: rgb(241, 120, 64);
+  background: black;
+  padding: 9% 10%;
+  height: 60px;
+  font-size: 20px;
+  z-index: 10;
+}
+
+.startButton {
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  color: rgb(241, 120, 64);
+  font-size: 15px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+}
+
+.submitButton {
+  padding: 5px 7px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  color: rgb(241, 120, 64);
+  font-size: 15px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+}
+
+.inputWord {
+  padding: 5px;
+  margin-right: 5px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  color: rgb(241, 120, 64);
+  font-size: 15px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+}
+
+.inputWord::placeholder {
+  color: rgb(241, 120, 64) !important;
+  font-size: 15px;
+}
+
+.userTurn {
+  padding: 7px 25px;
+  margin-right: 5px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  color: rgb(241, 120, 64);
+  font-size: 17px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+}
+
+.winnerArea {
+  width: 75%;
+  color: rgba(241, 120, 64);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  font-size: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  position: absolute;
+  height: 100%;
+  z-index: 2;
+}
+
+.leaveButton {
+  padding: 10px 15px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  color: rgb(241, 120, 64);
+  font-size: 15px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+}
+
+.gameArea {
+  width: 75%;
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 149, 0, 0.7),
+    rgb(241, 120, 64),
+    rgba(255, 149, 0, 0.7)
+  );
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
@@ -30,11 +126,14 @@
   background-color: rgb(20, 20, 20);
 }
 
-.participantSpot{
-  box-shadow: 0 2px 3px rgba(0,0,0,0.7);
-  background:rgba(255, 149, 0, 0.8);
+.participantSpot {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(1px);
-  padding:2px 10px;
+  color: rgb(241, 120, 64);
+  padding: 2px 10px;
+  height: 50px;
+  width: 100px;
+  text-align: center;
   border-radius: 5px;
 }
-
